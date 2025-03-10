@@ -14,4 +14,9 @@ public class Astreoid : MonoBehaviour
         
         playerHealth.Crash();
     }
+
+    private void OnBecameInvisible()
+    {
+        Destroy(gameObject);
+    }
 }
