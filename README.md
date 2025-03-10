@@ -1,4 +1,4 @@
-# Asteroid Avoider
+# Asteroid Avoider 🚀🛰️🌌
 
 Asteroid Avoider is a simple game developed as part of a Udemy course by an engineer passionate about game development. The game involves navigating a spaceship to avoid incoming asteroids.
 
@@ -18,15 +18,15 @@ For more information about the Star Sparrow assets, visit:
 
 ## Potential Features
 
-### Reward System
+### Reward System 🥯
 
-Spaceships can collect special coins while avoiding astreoids this coins can be spend later on.
+- Spaceships can collect special coins while avoiding astreoids this coins can be spend later on.
 
-### Redemption System
+### Redemption System 💸
 
-Spaceships can be modified or changed.
+- Spaceships can be modified or changed.
 
-### Health Mechanics
+### Health Mechanics ❤️‍🩹
 
-Health can be increased or it can be regenate over time if necessary skill learned.
+- Health can be increased or it can be regenate over time if necessary skill learned.
 
