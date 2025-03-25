@@ -164,6 +164,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7a2a51be3732ea648a2eebddcaf5980c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  gameOverText: {fileID: 1826120872}
+  scoreSystem: {fileID: 688513535}
   gameOverUI: {fileID: 126514779}
   astreidSpwaner: {fileID: 1393293755}
 --- !u!1 &126514779
