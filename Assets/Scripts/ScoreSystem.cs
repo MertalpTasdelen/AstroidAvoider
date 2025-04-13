@@ -29,5 +29,10 @@ public class ScoreSystem : MonoBehaviour
     {
         scoreText.text = Mathf.FloorToInt(AddScore()).ToString();
     }
+
+    public void StartTimer()
+    {
+        isCrashed = false;
+    }
 }
 
