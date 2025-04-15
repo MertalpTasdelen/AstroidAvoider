@@ -2,16 +2,34 @@ using UnityEngine;
 
 public class AstreoidSpawner : MonoBehaviour
 {
+    public static AstreoidSpawner Instance { get; private set; }
+
     [SerializeField] private GameObject[] astreoidPrefabs;
     [SerializeField] private float secondsBetweenAstreoids;
     [SerializeField] private Vector2 forceRange;
 
+    private int currentDifficultyLevel = 1;
+
     private Camera mainCamera;
     private float timer;
+
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start()
     {
         mainCamera = Camera.main;
+
+        SetDifficultyLevel(1); // Başlangıç zorluk seviyesi
     }
 
     // Update is called once per frame
@@ -19,7 +37,7 @@ public class AstreoidSpawner : MonoBehaviour
     {
         timer -= Time.deltaTime;
 
-        if(timer <= 0)
+        if (timer <= 0)
         {
             SpawnAstreid();
 
@@ -34,7 +52,7 @@ public class AstreoidSpawner : MonoBehaviour
         Vector2 spawnPosition = Vector2.zero;
         Vector2 force = Vector2.zero;
 
-        switch(side)
+        switch (side)
         {
             case 0:
                 spawnPosition.x = 0;
@@ -46,11 +64,11 @@ public class AstreoidSpawner : MonoBehaviour
                 spawnPosition.y = Random.value;
                 force = new Vector2(-1f, Random.Range(-1f, 1f));
                 break;
-            case 2:           
+            case 2:
                 spawnPosition.y = 0;
                 spawnPosition.x = Random.value;
                 force = new Vector2(Random.Range(-1f, 1f), 1f);
-                break;   
+                break;
             case 3:
                 spawnPosition.y = 1;
                 spawnPosition.x = Random.value;
@@ -63,12 +81,35 @@ public class AstreoidSpawner : MonoBehaviour
         worldSpawnPoint.z = 0;
 
         GameObject astreoidInstance = Instantiate(
-            astreoidPrefabs[Random.Range(0, astreoidPrefabs.Length)], 
-            worldSpawnPoint, 
+            astreoidPrefabs[Random.Range(0, astreoidPrefabs.Length)],
+            worldSpawnPoint,
             Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)));
-    
+
         Rigidbody rb = astreoidInstance.GetComponent<Rigidbody>();
 
-        rb.linearVelocity = force.normalized * Random.Range(forceRange.x, forceRange.y); 
+        rb.linearVelocity = force.normalized * Random.Range(forceRange.x, forceRange.y);
+
+        Astreoid asteroidScript = astreoidInstance.GetComponent<Astreoid>();
+
+        if (asteroidScript != null && currentDifficultyLevel >= 2)
+        {
+            Debug.Log("Zigzagging astreoid spawned!");
+            asteroidScript.useZigZag = true;
+            asteroidScript.zigzagFrequency = 5f + currentDifficultyLevel;
+            asteroidScript.zigzagMagnitude = 0.5f + currentDifficultyLevel * 0.8f;
+
+            // asteroidScript.zigzagFrequency = 10f; // daha hızlı salınım
+            // asteroidScript.zigzagMagnitude = 3f;  // daha geniş aralık
+        }
     }
+
+    public void SetDifficultyLevel(int level)
+    {
+        currentDifficultyLevel = level;
+
+        secondsBetweenAstreoids = Mathf.Max(0.5f, 2.5f - (level * 0.2f));
+
+        forceRange = new Vector2(5f + level * 0.5f, 10f + level);
+    }
+
 }
