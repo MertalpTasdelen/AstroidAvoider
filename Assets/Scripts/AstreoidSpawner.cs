@@ -93,13 +93,15 @@ public class AstreoidSpawner : MonoBehaviour
 
         if (asteroidScript != null && currentDifficultyLevel >= 2)
         {
-            Debug.Log("Zigzagging astreoid spawned!");
             asteroidScript.useZigZag = true;
             asteroidScript.zigzagFrequency = 5f + currentDifficultyLevel;
-            asteroidScript.zigzagMagnitude = 0.5f + currentDifficultyLevel * 0.8f;
+            asteroidScript.zigzagMagnitude = 0.5f + currentDifficultyLevel * 0.5f;
+        }
 
-            // asteroidScript.zigzagFrequency = 10f; // daha hızlı salınım
-            // asteroidScript.zigzagMagnitude = 3f;  // daha geniş aralık
+        if (currentDifficultyLevel >= 5)
+        {
+            asteroidScript.useHoming = true;
+            asteroidScript.homingStrength = 2f + currentDifficultyLevel * 0.6f;
         }
     }
 
@@ -109,7 +111,7 @@ public class AstreoidSpawner : MonoBehaviour
 
         secondsBetweenAstreoids = Mathf.Max(0.5f, 2.5f - (level * 0.2f));
 
-        forceRange = new Vector2(5f + level * 0.5f, 10f + level);
+        forceRange = new Vector2(5f + level * 0.5f, 1f + level);
     }
 
 }

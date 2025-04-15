@@ -643,7 +643,7 @@ GameObject:
   - component: {fileID: 751640268}
   m_Layer: 0
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -7340,6 +7340,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   performanceTracker: {fileID: 1987583516}
+  difficultyText: {fileID: 1148479258}
   checkInterval: 5
   shakeDuration: 0.6
   shakeMagnitude: 0.2

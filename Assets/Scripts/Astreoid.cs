@@ -7,19 +7,36 @@ public class Astreoid : MonoBehaviour
     public float zigzagFrequency = 5f;
     public float zigzagMagnitude = 1f;
 
+    public bool useHoming = false;
+    public float homingStrength = 2f;
+
+    private Transform player;
+    private Rigidbody rb;
+
 
     private Vector3 direction;
     private float spawnTime;
 
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
+        player = GameObject.FindWithTag("Player")?.transform;
+
         spawnTime = Time.time;
 
-        Rigidbody rb = GetComponent<Rigidbody>();
         if (rb != null)
         {
             direction = rb.linearVelocity.normalized;
         }
+
+        // if (useHoming)
+        // {
+        //     PlayerMovement player = Object.FindFirstObjectByType<PlayerMovement>();
+        //     if (player != null)
+        //     {
+        //         playerTransform = player.transform;
+        //     }
+        // }
     }
 
     void Update()
@@ -30,6 +47,13 @@ public class Astreoid : MonoBehaviour
             Vector3 perp = Vector3.Cross(direction, Vector3.forward); // dik açı
 
             transform.position += perp * wave * Time.deltaTime;
+        }
+
+        if (useHoming && player != null)
+        {
+            Vector3 toPlayer = (player.position - transform.position).normalized;
+            Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity.normalized, toPlayer, homingStrength * Time.deltaTime);
+            rb.linearVelocity = newVelocity * rb.linearVelocity.magnitude; // mevcut hız korunur ama yön değişir
         }
     }
 

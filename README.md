@@ -1,96 +1,105 @@
 # 🛰️ Asteroid Avoider
 
-Asteroid Avoider is a mobile-focused space survival game built with Unity.  
-Your goal is to maneuver a modular spaceship and avoid waves of dynamically generated asteroids as long as you can.
+**Asteroid Avoider** is a fast-paced, mobile-first space survival game developed in Unity. The player controls a modular spaceship, aiming to survive as long as possible while avoiding dynamically spawning asteroids that evolve in behavior and difficulty over time.
 
-This game started as a Udemy learning project and is evolving into a polished mobile game with smart difficulty progression and responsive visual feedback.
-
----
-
-## 🎮 Core Gameplay
-
-- Control your spaceship to avoid incoming asteroids.
-- Survive as long as possible and challenge yourself as the game progressively gets harder.
+This project started as a learning prototype and is actively evolving into a polished mobile game with responsive mechanics, progressive difficulty, and game feel enhancements.
 
 ---
 
-## 🧠 Features Implemented
+## 🎮 Gameplay Overview
 
-### 🧩 Dynamic Difficulty Adjustment (DDA)
-A real-time difficulty system that adjusts the spawn rate and behavior of asteroids based on player performance:
+- Tap and drag to steer your spaceship
+- Avoid procedurally spawned asteroids
+- The longer you survive, the harder it gets
 
-- **Performance Metrics Tracked:**
+---
+
+## 🚀 Features Implemented
+
+### 🧠 Dynamic Difficulty Adjustment (DDA)
+A real-time difficulty system adjusts the game based on the player's performance:
+- Difficulty level increases every 15 seconds if the player is performing well
+- Metrics tracked:
   - Time survived
-  - Number of asteroids avoided
-  - Number of collisions (hits)
-
-- **Adjustment Logic:**
-  - Every 15 seconds, the system evaluates the player's score (`avoided - hits`) and updates the difficulty level.
-  - Difficulty level affects asteroid spawn rate and velocity range.
+  - Asteroids avoided
+  - Hits taken
+- Increasing difficulty affects:
+  - Asteroid spawn rate
+  - Movement complexity
+  - Velocity ranges
 
 ### 🌀 Advanced Asteroid Behaviors
-Starting from level 3, asteroids display more complex movement patterns:
+Asteroids evolve in behavior as difficulty increases:
+| Difficulty Level | Behavior |
+|------------------|----------|
+| 1–2              | Straight-line asteroids |
+| 3–4              | Zigzag (sinusoidal movement) |
+| 5+               | Homing behavior (slow tracking toward player) |
 
-- **Zig-Zag Movement**: Sinusoidal lateral motion for harder prediction  
-- *(Planned)* Homing asteroids, burst speed, and random directional changes for higher levels
+Each behavior adds unpredictability and challenge while maintaining fairness.
 
-### 🌈 Visual Feedback
-Difficulty changes are clearly communicated through:
-
-- **Sinusoidal Screen Shake**: Adds punch when the game gets tougher
-- **Red Flash Overlay**: Indicates danger and increasing intensity
-- **On-Screen Difficulty Display**: Live UI update of the current difficulty level
-
----
-
-## 🧪 Current Scenes
-
-- `Scene_menu`: Main menu screen
-- `Scene_main`: Core gameplay scene (where all logic is implemented)
+### 💥 Game Feel Enhancements
+- **Sinusoidal camera shake** on difficulty increase
+- **Red flash overlay** for intense visual feedback
+- **On-screen difficulty level UI** to track progression
 
 ---
 
-## 📂 Scripts Overview
+## 🎯 Controls
 
-| Script | Purpose |
-|--------|---------|
-| `PlayerPerformanceTracker` | Tracks real-time performance data |
-| `DifficultyManager` | Adjusts difficulty and triggers visual feedback |
-| `AstreoidSpawner` | Spawns asteroids based on difficulty level |
-| `Astreoid` | Handles movement logic and collision detection |
+- **Touchscreen (Mobile)**: Hold to move toward touch position
+- **Keyboard (Editor)**: Controlled via mouse emulation
+- The player is always kept within the screen bounds via a wrapping mechanic
 
 ---
 
-## 🛠️ How to Run
+## 🛠️ Technical Breakdown
 
-1. Open the project in Unity
-2. Load `Scene_main`
-3. Hit play to test gameplay
-4. Observe the difficulty level increasing over time and the resulting visual/audio feedback
+| Script | Role |
+|--------|------|
+| `PlayerMovements.cs` | Controls player movement and rotation based on touch |
+| `PlayerPerformanceTracker.cs` | Tracks in-game performance stats |
+| `DifficultyManager.cs` | Calculates difficulty level and triggers feedback |
+| `AstreoidSpawner.cs` | Spawns asteroids and injects difficulty-based logic |
+| `Astreoid.cs` | Handles asteroid movement, collision logic, and complex patterns |
 
 ---
 
-## 🎯 Next Steps
+## 📂 Scenes
 
-- Add new asteroid behaviors (Homing, Split, Burst)
-- Implement in-game economy (coins, upgrades)
-- Leaderboard and score tracking
-- Polish UI and optimize for mobile screen resolutions
+- `Scene_menu`: Main menu (WIP)
+- `Scene_main`: Core gameplay scene (all main systems implemented here)
 
 ---
 
 ## 📱 Target Platform
 
-- Android (initial)
-- iOS (planned)
+- Android (Initial release)
+- iOS (Planned)
 
 ---
 
-## 🙌 Credits
+## 📌 Upcoming Features
 
-- Modular spaceship assets from Star Sparrow
-- Based on foundational lessons from a Udemy Unity course
+- Split-type asteroids (split into two on impact)
+- Collectibles / coins
+- Shield & power-up mechanics
+- Score system & leaderboard
+- In-game settings (difficulty toggle, sound options)
 
 ---
+
+## 🎨 Assets & Credits
+
+- Spaceship assets from **Star Sparrow Modular Spaceship Kit**
+- Game architecture and input design inspired by Unity mobile dev best practices
+
+---
+
+## 👨‍💻 Author
 
 Made with ❤️ by [Mertalp Taşdelen](https://github.com/MertalpTasdelen)
+
+---
+
+> This project is in active development. Feedback and collaboration are welcome!
