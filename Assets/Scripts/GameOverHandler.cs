@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.SceneManagement; 
+using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.UI;
 using System.Collections;
@@ -15,17 +15,15 @@ public class GameOverHandler : MonoBehaviour
     public void EndGame()
     {
         astreidSpwaner.enabled = false;
-
-        //PAUSE THE SCORE WHEN THE PLAYER CRASH
         scoreSystem.PauseScore();
 
-        gameOverText.text = "Game Over\nScore: " + Mathf.FloorToInt(scoreSystem.GetScore()).ToString();
-        //DIPLAY THE SCORE ON THE UI
+        // Skoru UI'da göster
+        gameOverText.text = "Game Over\nScore: " + Mathf.FloorToInt(scoreSystem.GetScore());
         scoreSystem.gameObject.SetActive(false);
+        gameOverUI.SetActive(true);
+    }
 
-        gameOverUI.gameObject.SetActive(true);
-    }  
-    
+
     public void RestartGame()
     {
         // Load the game scene

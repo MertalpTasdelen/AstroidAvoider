@@ -8,12 +8,37 @@ public class ScoreSystem : MonoBehaviour
     private float score;
     private bool isCrashed;
 
-    public float AddScore()
+    public static ScoreSystem Instance { get; private set; }
+
+    private void Awake()
     {
-        if(!isCrashed){
-            score += Time.deltaTime * scoreMultiplier;
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
-        return score;
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Update()
+    {
+        if (!isCrashed)
+        {
+            score += Time.deltaTime * scoreMultiplier;
+            scoreText.text = Mathf.FloorToInt(score).ToString();
+        }
+    }
+
+    public void AddAvoidBonus(int amount = 10)
+    {
+        if (!isCrashed)
+        {
+            score += amount;
+            scoreText.text = Mathf.FloorToInt(score).ToString();
+        }
     }
 
     public void PauseScore()
@@ -21,18 +46,19 @@ public class ScoreSystem : MonoBehaviour
         isCrashed = true;
     }
 
-    public float GetScore(){
-        return score;
-    }
-
-    void Update()
-    {
-        scoreText.text = Mathf.FloorToInt(AddScore()).ToString();
-    }
-
     public void StartTimer()
     {
         isCrashed = false;
     }
-}
 
+    public float GetScore()
+    {
+        return score;
+    }
+
+    public void ResetScore()
+    {
+        score = 0f;
+        scoreText.text = "0";
+    }
+}

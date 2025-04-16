@@ -18,6 +18,10 @@ public class PlayerPerformanceTracker : MonoBehaviour
     public void RegisterAsteroidAvoided()
     {
         asteroidsAvoided++;
+        if (ScoreSystem.Instance != null)
+        {
+            ScoreSystem.Instance.AddAvoidBonus(10); // her kaçınma 10 puan
+        }
     }
 
     public void RegisterHit()
