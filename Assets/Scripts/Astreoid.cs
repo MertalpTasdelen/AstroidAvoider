@@ -9,6 +9,7 @@ public class Astreoid : MonoBehaviour
 
     public bool useHoming = false;
     public float homingStrength = 2f;
+    public float homingSpeed = 4f;
 
     private Transform player;
     private Rigidbody rb;
@@ -17,10 +18,16 @@ public class Astreoid : MonoBehaviour
     private Vector3 direction;
     private float spawnTime;
 
+    public bool canSplit = true;
+    public float splitDelay = 2f;
+    public GameObject splitAsteroidPrefab;
+
     void Start()
     {
+        spawnTime = Time.time;
+
+
         rb = GetComponent<Rigidbody>();
-        player = GameObject.FindWithTag("Player")?.transform;
 
         spawnTime = Time.time;
 
@@ -29,14 +36,15 @@ public class Astreoid : MonoBehaviour
             direction = rb.linearVelocity.normalized;
         }
 
-        // if (useHoming)
-        // {
-        //     PlayerMovement player = Object.FindFirstObjectByType<PlayerMovement>();
-        //     if (player != null)
-        //     {
-        //         playerTransform = player.transform;
-        //     }
-        // }
+        if (useHoming)
+        {
+            Transform player = GameObject.FindWithTag("Player")?.transform;
+            if (player != null)
+            {
+                Vector3 directionToPlayer = (player.position - transform.position).normalized;
+                rb.linearVelocity = directionToPlayer * homingSpeed;
+            }
+        }
     }
 
     void Update()
@@ -60,23 +68,32 @@ public class Astreoid : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-        if (playerHealth == null)
+        if (playerHealth != null)
         {
-            return;
-        }
+            PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
+            if (tracker != null)
+            {
+                tracker.RegisterHit();
+            }
 
-        // Yeni Unity API'si ile performans takibini bildir
-        PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
-        if (tracker != null)
-        {
-            tracker.RegisterHit();
-        }
+            playerHealth.Crash();
 
-        playerHealth.Crash();
+            if (canSplit && Time.time - spawnTime > splitDelay)
+            {
+                SpawnSplitAsteroids();
+            }
+
+            Destroy(gameObject);
+        }
     }
 
     private void OnBecameInvisible()
     {
+        if (canSplit && Time.time - spawnTime > splitDelay)
+        {
+            SpawnSplitAsteroids();
+        }
+
         PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
         if (tracker != null)
         {
@@ -84,5 +101,23 @@ public class Astreoid : MonoBehaviour
         }
 
         Destroy(gameObject);
+    }
+
+    private void SpawnSplitAsteroids()
+    {
+        if (splitAsteroidPrefab == null) return;
+
+        for (int i = 0; i < 2; i++)
+        {
+            GameObject newAsteroid = Instantiate(
+                splitAsteroidPrefab,
+                transform.position,
+                Quaternion.identity);
+
+            Rigidbody rb = newAsteroid.GetComponent<Rigidbody>();
+            Vector3 randomDirection = Random.insideUnitCircle.normalized;
+            float splitForce = Random.Range(2f, 4f);
+            rb.linearVelocity = randomDirection * splitForce;
+        }
     }
 }

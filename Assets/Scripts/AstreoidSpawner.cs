@@ -5,6 +5,8 @@ public class AstreoidSpawner : MonoBehaviour
     public static AstreoidSpawner Instance { get; private set; }
 
     [SerializeField] private GameObject[] astreoidPrefabs;
+    [SerializeField] private GameObject splitAsteroidPrefab;
+
     [SerializeField] private float secondsBetweenAstreoids;
     [SerializeField] private Vector2 forceRange;
 
@@ -98,10 +100,17 @@ public class AstreoidSpawner : MonoBehaviour
             asteroidScript.zigzagMagnitude = 0.5f + currentDifficultyLevel * 0.5f;
         }
 
-        if (currentDifficultyLevel >= 5)
+        if (currentDifficultyLevel >= 4)
         {
             asteroidScript.useHoming = true;
-            asteroidScript.homingStrength = 2f + currentDifficultyLevel * 0.6f;
+            asteroidScript.homingSpeed = Random.Range(2.5f, 4.5f); // daha yumuşak bir hız aralığı
+        }
+
+        if (asteroidScript != null && currentDifficultyLevel >= 1)
+        {
+            asteroidScript.canSplit = true;
+            asteroidScript.splitAsteroidPrefab = splitAsteroidPrefab;
+            asteroidScript.splitDelay = 2f + Random.Range(0f, 0.5f); // Delay ayarlandı 🎯
         }
     }
 
