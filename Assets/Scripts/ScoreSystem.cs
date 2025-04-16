@@ -8,10 +8,14 @@ public class ScoreSystem : MonoBehaviour
     private float score;
     private bool isCrashed;
 
+    private int highScore;
+
     public static ScoreSystem Instance { get; private set; }
 
     private void Awake()
     {
+        LoadHighScore();
+
         if (Instance == null)
         {
             Instance = this;
@@ -23,12 +27,43 @@ public class ScoreSystem : MonoBehaviour
         }
     }
 
+    private void LoadHighScore()
+    {
+        highScore = PlayerPrefs.GetInt("HighScore", 0);
+    }
+
+    private void SaveHighScore()
+    {
+        PlayerPrefs.SetInt("HighScore", highScore);
+        PlayerPrefs.Save();
+    }
+
+    public int GetHighScore()
+    {
+        return highScore;
+    }
+
     private void Update()
     {
         if (!isCrashed)
         {
             score += Time.deltaTime * scoreMultiplier;
             scoreText.text = Mathf.FloorToInt(score).ToString();
+        }
+    }
+
+    public void AddScore(int amount)
+    {
+        if (!isCrashed)
+        {
+            score += amount;
+            scoreText.text = Mathf.FloorToInt(score).ToString();
+
+            if (score > highScore)
+            {
+                highScore = Mathf.FloorToInt(score);
+                SaveHighScore();
+            }
         }
     }
 

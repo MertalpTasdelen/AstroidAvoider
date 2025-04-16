@@ -106,7 +106,7 @@ public class AstreoidSpawner : MonoBehaviour
             asteroidScript.homingSpeed = Random.Range(2.5f, 4.5f); // daha yumuşak bir hız aralığı
         }
 
-        if (asteroidScript != null && currentDifficultyLevel >= 1)
+        if (asteroidScript != null && currentDifficultyLevel >= 6)
         {
             asteroidScript.canSplit = true;
             asteroidScript.splitAsteroidPrefab = splitAsteroidPrefab;

@@ -17,8 +17,11 @@ public class GameOverHandler : MonoBehaviour
         astreidSpwaner.enabled = false;
         scoreSystem.PauseScore();
 
-        // Skoru UI'da göster
-        gameOverText.text = "Game Over\nScore: " + Mathf.FloorToInt(scoreSystem.GetScore());
+        int finalScore = Mathf.FloorToInt(scoreSystem.GetScore());
+        int highScore = scoreSystem.GetHighScore();
+
+        gameOverText.text = $"Game Over\nScore: {finalScore}\nHigh Score: {highScore}";
+
         scoreSystem.gameObject.SetActive(false);
         gameOverUI.SetActive(true);
     }
