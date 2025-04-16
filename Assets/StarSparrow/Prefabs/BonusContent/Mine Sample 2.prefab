@@ -45,6 +45,7 @@ GameObject:
   - component: {fileID: 23158056617320270}
   - component: {fileID: 3496227566374352920}
   - component: {fileID: 8349273925547786705}
+  - component: {fileID: 3019157724814089795}
   m_Layer: 0
   m_Name: Mine Sample 2
   m_TagString: Untagged
@@ -169,6 +170,27 @@ Rigidbody:
   m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 1
+--- !u!114 &3019157724814089795
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1040074329139878}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a69d469b8babbc843a9e73bb96bd4c69, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  useZigZag: 0
+  zigzagFrequency: 5
+  zigzagMagnitude: 1
+  useHoming: 0
+  homingStrength: 2
+  homingSpeed: 4
+  canSplit: 1
+  splitDelay: 2
+  splitAsteroidPrefab: {fileID: 0}
 --- !u!1 &1391615405692326
 GameObject:
   m_ObjectHideFlags: 0

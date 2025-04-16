@@ -157,4 +157,4 @@ MonoBehaviour:
   homingSpeed: 4
   canSplit: 1
   splitDelay: 2
-  splitAsteroidPrefab: {fileID: 0}
+  splitAsteroidPrefab: {fileID: 1040074329139878}

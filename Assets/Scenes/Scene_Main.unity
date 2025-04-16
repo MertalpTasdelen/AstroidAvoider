@@ -6367,7 +6367,7 @@ MonoBehaviour:
   astreoidPrefabs:
   - {fileID: 8059833892791638760, guid: d5b02efcf9fb6d14589aa09dc33a5552, type: 3}
   - {fileID: 1603805468513432338, guid: eaa2bc800819c364380ef2c11712fb87, type: 3}
-  splitAsteroidPrefab: {fileID: 1040074329139878, guid: fa8aadfb07ca2034188c69c6f2ab4624, type: 3}
+  splitAsteroidPrefab: {fileID: 1040074329139878, guid: fb1db0349223a394e98b65533ebde234, type: 3}
   secondsBetweenAstreoids: 1.5
   forceRange: {x: 1, y: 6}
 --- !u!4 &1393293756

@@ -22,6 +22,8 @@ public class Astreoid : MonoBehaviour
     public float splitDelay = 2f;
     public GameObject splitAsteroidPrefab;
 
+    private bool hasSplit = false;
+
     void Start()
     {
         spawnTime = Time.time;
@@ -49,6 +51,13 @@ public class Astreoid : MonoBehaviour
 
     void Update()
     {
+        if (canSplit && !hasSplit && Time.time - spawnTime > splitDelay)
+        {
+            hasSplit = true;
+            SpawnSplitAsteroids();
+            Destroy(gameObject);
+        }
+
         if (useZigZag)
         {
             float wave = Mathf.Sin((Time.time - spawnTime) * zigzagFrequency) * zigzagMagnitude;
@@ -76,22 +85,26 @@ public class Astreoid : MonoBehaviour
                 tracker.RegisterHit();
             }
 
-            playerHealth.Crash();
-
-            if (canSplit && Time.time - spawnTime > splitDelay)
+            if (canSplit && !hasSplit && Time.time - spawnTime > splitDelay)
             {
+                hasSplit = true;
                 SpawnSplitAsteroids();
+                Destroy(gameObject); // sadece Update’te çağrıyorsan
+                Debug.Log("Asteroid split!");
             }
 
+            playerHealth.Crash();
             Destroy(gameObject);
         }
     }
 
     private void OnBecameInvisible()
     {
-        if (canSplit && Time.time - spawnTime > splitDelay)
+        if (canSplit && !hasSplit && Time.time - spawnTime > splitDelay)
         {
+            hasSplit = true;
             SpawnSplitAsteroids();
+            Destroy(gameObject); // sadece Update’te çağrıyorsan
         }
 
         PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
@@ -118,6 +131,16 @@ public class Astreoid : MonoBehaviour
             Vector3 randomDirection = Random.insideUnitCircle.normalized;
             float splitForce = Random.Range(2f, 4f);
             rb.linearVelocity = randomDirection * splitForce;
+
+            // 🛡️ Bu asteroidler tekrar bölünmemeli!
+            Astreoid splitScript = newAsteroid.GetComponent<Astreoid>();
+            if (splitScript != null)
+            {
+                splitScript.canSplit = false; // ❗️Bir daha bölünmesin
+                splitScript.splitAsteroidPrefab = null;
+                splitScript.useHoming = false;
+                splitScript.useZigZag = false;
+            }
         }
     }
 }
