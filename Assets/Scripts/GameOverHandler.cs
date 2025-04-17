@@ -15,20 +15,30 @@ public class GameOverHandler : MonoBehaviour
     public void EndGame()
     {
         astreidSpwaner.enabled = false;
-        scoreSystem.PauseScore();
 
-        int finalScore = Mathf.FloorToInt(scoreSystem.GetScore());
-        int highScore = scoreSystem.GetHighScore();
+        var scoreRef = scoreSystem != null ? scoreSystem : ScoreSystem.Instance;
+        if (scoreRef != null)
+        {
+            scoreRef.PauseScore();
 
-        gameOverText.text = $"Game Over\nScore: {finalScore}\nHigh Score: {highScore}";
+            int finalScore = Mathf.FloorToInt(scoreRef.GetScore());
+            int highScore = scoreRef.GetHighScore();
 
-        scoreSystem.gameObject.SetActive(false);
+            gameOverText.text = $"Game Over\nScore: {finalScore}\nHigh Score: {highScore}";
+        }
+        else
+        {
+            gameOverText.text = "Game Over\nScore: 0\nHigh Score: 0";
+        }
+
         gameOverUI.SetActive(true);
     }
 
 
     public void RestartGame()
     {
+        ScoreSystem.Instance.ResetScore();
+        ScoreSystem.Instance.StartTimer();
         // Load the game scene
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
@@ -43,6 +53,11 @@ public class GameOverHandler : MonoBehaviour
     public void ReturnToMainMenu()
     {
         // Load the main menu scene
+        if (ScoreSystem.Instance != null)
+        {
+            Destroy(ScoreSystem.Instance.gameObject);
+        }
+        
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 

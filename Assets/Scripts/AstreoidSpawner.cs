@@ -93,24 +93,32 @@ public class AstreoidSpawner : MonoBehaviour
 
         Astreoid asteroidScript = astreoidInstance.GetComponent<Astreoid>();
 
-        if (asteroidScript != null && currentDifficultyLevel >= 2)
+        if (asteroidScript != null)
         {
-            asteroidScript.useZigZag = true;
-            asteroidScript.zigzagFrequency = 5f + currentDifficultyLevel;
-            asteroidScript.zigzagMagnitude = 0.5f + currentDifficultyLevel * 0.5f;
-        }
+            if (currentDifficultyLevel >= 2)
+            {
+                asteroidScript.useZigZag = true;
+                asteroidScript.zigzagFrequency = 5f + currentDifficultyLevel;
+                asteroidScript.zigzagMagnitude = 0.5f + currentDifficultyLevel * 0.5f;
+            }
 
-        if (currentDifficultyLevel >= 4)
-        {
-            asteroidScript.useHoming = true;
-            asteroidScript.homingSpeed = Random.Range(2.5f, 4.5f); // daha yumuşak bir hız aralığı
-        }
+            if (currentDifficultyLevel >= 4)
+            {
+                asteroidScript.useHoming = true;
+                asteroidScript.homingSpeed = Random.Range(2.5f, 4.5f);
+            }
 
-        if (asteroidScript != null && currentDifficultyLevel >= 6)
-        {
-            asteroidScript.canSplit = true;
-            asteroidScript.splitAsteroidPrefab = splitAsteroidPrefab;
-            asteroidScript.splitDelay = 2f + Random.Range(0f, 0.5f); // Delay ayarlandı 🎯
+            // 💣 Split özelliğini sadece bazı asteroidlere ver!
+            if (currentDifficultyLevel >= 5 && Random.value > 0.5f) // örnek: sadece %50’si split
+            {
+                asteroidScript.canSplit = true;
+                asteroidScript.splitDelay = 2f + Random.Range(0f, 0.5f);
+                asteroidScript.splitAsteroidPrefab = splitAsteroidPrefab;
+            }
+            else
+            {
+                asteroidScript.canSplit = false; // split olmayanlar yok olmasın!
+            }
         }
     }
 

@@ -12,6 +12,12 @@ public class ScoreSystem : MonoBehaviour
 
     public static ScoreSystem Instance { get; private set; }
 
+    private void Start()
+    {
+        ResetScore();     // Skoru sıfırla
+        StartTimer();     // Skor sayacını başlat
+    }
+    
     private void Awake()
     {
         LoadHighScore();
@@ -34,6 +40,7 @@ public class ScoreSystem : MonoBehaviour
 
     private void SaveHighScore()
     {
+        Debug.Log("Saving high score: " + highScore);
         PlayerPrefs.SetInt("HighScore", highScore);
         PlayerPrefs.Save();
     }
@@ -54,6 +61,7 @@ public class ScoreSystem : MonoBehaviour
 
     public void AddScore(int amount)
     {
+        Debug.Log("Adding score: " + amount);
         if (!isCrashed)
         {
             score += amount;
@@ -72,6 +80,7 @@ public class ScoreSystem : MonoBehaviour
         if (!isCrashed)
         {
             score += amount;
+            AddScore(amount);
             scoreText.text = Mathf.FloorToInt(score).ToString();
         }
     }
