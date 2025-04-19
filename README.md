@@ -1,89 +1,90 @@
-# 🚀 Asteroid Avoider
+# Asteroid Avoider 🚀
 
-**Asteroid Avoider** is a fast-paced, survival-based mobile arcade game developed in Unity.  
-The objective is simple: avoid increasingly dangerous asteroids, stay alive, and climb the score ranks — the longer you survive, the harder it gets.
-
----
-
-## 🎮 Gameplay
-
-You control a modular spaceship in deep space.  
-Your mission is to avoid waves of procedurally spawned asteroids with varied behaviors.
-
-### Core Mechanics:
-- **Dodge to survive**: One collision and it’s game over.
-- **Score system**: Earn points by surviving time and avoiding asteroids.
-- **Dynamic difficulty**: The game gets harder as you perform better.
-- **Split asteroids**: Some asteroids divide into smaller ones after a delay, increasing chaos.
+Asteroid Avoider is an endless dodge-and-survive style mobile space game built with Unity. The player controls a spaceship, avoiding incoming asteroids of varying behaviors while experiencing a visually dynamic galactic environment.
 
 ---
 
-## 🧠 Key Features
-
-| Feature | Description |
-|--------|-------------|
-| 💥 Split Asteroids | Asteroids automatically split into smaller ones mid-air or on impact |
-| 🧠 Dynamic Difficulty | Difficulty increases based on player performance every 15 seconds |
-| 🔄 Zig-Zag & Homing Patterns | Advanced movement behaviors that challenge the player |
-| ⏱️ Time-Based Scoring | Score increases with time survived |
-| 🎯 Avoidance Rewards | Score boosts for successfully dodging asteroids |
-| 💀 Game Over UI | Score shown at the end, gameplay halted |
+## 🎮 Core Gameplay
+- **Avoid to survive**: Player controls a spaceship with touch or mouse and avoids procedurally spawned asteroids.
+- **Dynamic difficulty**: The game increases in difficulty over time using a `DifficultyManager`, introducing faster spawns, zigzag/homing/splitting asteroids.
+- **Score system**: Players earn score based on time survived and extra points for avoiding asteroids.
+- **High score tracking**: Best score is saved using `PlayerPrefs` and displayed on game over screen.
 
 ---
 
-## 🖥️ Current Scenes
+## 🚀 Features Implemented
 
-- `Scene_menu`: Main menu (WIP)
-- `Scene_main`: Main gameplay loop
+### ✅ Parallax Starfield Background
+- 3-layer parallax system: distant stars, nebula, and fast-moving foreground stars.
+- Background scrolls **opposite to player movement** for immersive depth (like [this reference](https://www.youtube.com/watch?v=_kzgG1n2eI0)).
+- Layers scroll faster as difficulty increases.
 
----
+### ✅ Asteroid Behaviors
+- **ZigZag**: Wobbly movement.
+- **Homing**: Locks onto player’s position at spawn.
+- **Split**: After delay, breaks into 2 smaller asteroids.
 
-## 🛠️ Tech Overview
+### ✅ Performance Tracker
+- Tracks total survived time, asteroids avoided, and damage taken.
+- Powers dynamic difficulty system.
 
-| System | Scripts |
-|--------|---------|
-| Score System | `ScoreSystem.cs` (singleton, time & event based scoring) |
-| Performance Tracking | `PlayerPerformanceTracker.cs` |
-| Difficulty Control | `DifficultyManager.cs` |
-| Asteroid Behavior | `Astreoid.cs`, `AstreoidSpawner.cs` |
-| Game Flow | `GameOverHandler.cs` |
+### ✅ Game Over System
+- Game ends on player crash.
+- Displays final and high score.
+- Includes "Play Again" and "Return to Menu" options with proper state resets.
 
----
-
-## 🎨 UI
-
-- In-game score display
-- Game Over screen with final score summary
-- Optional debug logging for asteroid behavior
-
----
-
-## 📱 Target Platform
-
-- Mobile (Android first)
-- Optional keyboard & mouse input for testing in Unity Editor
+### 🔄 Trail + Flame Effect (Ongoing)
+- Added **TrailRenderer** to player ship.
+- Dynamically emits trail only during movement.
+- Added optional **fire sprite particle system** behind the ship for a rocket engine flame look.
 
 ---
 
-## 🚧 Features In Progress
-
-- 💰 Coin system (collectibles)
-- 🛡️ Power-ups (shields, slow-motion)
-- 📈 High score saving & local leaderboard
-- 🛍️ Upgrade shop (post-run improvements)
+## 📁 Structure Overview
+```
+Assets/
+├── Scripts/
+│   ├── PlayerMovement.cs
+│   ├── AstreoidSpawner.cs
+│   ├── Astreoid.cs
+│   ├── ScoreSystem.cs
+│   ├── GameOverHandler.cs
+│   ├── DifficultyManager.cs
+│   └── PlayerPerformanceTracker.cs
+│
+├── Prefabs/
+│   ├── AsteroidPrefabs
+│   └── BackgroundLayers
+│
+├── Sprites/
+│   ├── AA1.png (Fast stars)
+│   ├── AA2.png (Nebula)
+│   └── AA3.png (Distant stars)
+│
+├── Materials/
+│   └── Trail_Fire_Mat.mat
+```
 
 ---
 
-## 👨‍💻 Developed By
-
-**Mertalp Taşdelen**  
-Follow the journey at: [github.com/MertalpTasdelen](https://github.com/MertalpTasdelen)
+## 🔧 In Progress / To Do
+- [ ] Add coin system and in-game shop
+- [ ] Introduce power-ups (shield, slow time, score boost)
+- [ ] Ship skin unlocks
+- [ ] Mission/achievement system
+- [ ] Polished sound and particle feedbacks
 
 ---
 
-## ❤️ Notes
+## 🧠 Built With
+- Unity 2022+
+- C# scripting
+- 2D URP Pipeline (optional)
 
-This project started as a learning exercise and is evolving into a full-featured arcade experience.  
-All feedback, contributions, and ideas are welcome!
+---
 
-> Built with Unity. Fueled by coffee & pixels ☕🕹️
+## 👨‍🚀 Credits & License
+This game is developed as a personal project by [@MertalpTasdelen](https://github.com/MertalpTasdelen) for gameplay experimentation and Unity mastery.
+
+Sprites used from OpenGameArt, Itch.io, and AI-generated sources under free/non-commercial licenses.
+
