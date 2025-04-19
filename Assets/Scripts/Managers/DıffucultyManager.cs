@@ -84,4 +84,9 @@ public class DifficultyManager : MonoBehaviour
 
         screenOverlayImage.color = Color.clear;
     }
+
+    public int GetCurrentLevel()
+    {
+        return difficultyLevel;
+    }
 }
