@@ -6,6 +6,8 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float forceMagnitude;
     [SerializeField] private float maxVelocity;
     [SerializeField] private float rotationSpeed;
+    [SerializeField] private GameObject playerFlame;
+
 
     private Rigidbody rb;
     private Camera mainCamera;
@@ -18,6 +20,8 @@ public class PlayerMovements : MonoBehaviour
 
     void Update()
     {
+        playerFlame.SetActive(movementDirection != Vector3.zero);
+
         ProcessInput();
 
         KeepPlayerOnScreen();
