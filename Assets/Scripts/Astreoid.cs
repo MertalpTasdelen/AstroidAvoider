@@ -24,6 +24,10 @@ public class Astreoid : MonoBehaviour
 
     private bool hasSplit = false;
 
+    [SerializeField] public float nearMissThreshold = 10.5f; // Ayarlanabilir mesafe
+
+    [SerializeField] private bool nearMissTriggered = false;
+
     void Start()
     {
         spawnTime = Time.time;
@@ -72,6 +76,15 @@ public class Astreoid : MonoBehaviour
             Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity.normalized, toPlayer, homingStrength * Time.deltaTime);
             rb.linearVelocity = newVelocity * rb.linearVelocity.magnitude; // mevcut hız korunur ama yön değişir
         }
+
+        if (!hasSplit && canSplit && Time.time - spawnTime > splitDelay)
+        {
+            hasSplit = true;
+            SpawnSplitAsteroids();
+            Destroy(gameObject);
+        }
+
+        CheckNearMiss();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -141,6 +154,32 @@ public class Astreoid : MonoBehaviour
                 splitScript.useHoming = false;
                 splitScript.useZigZag = false;
             }
+        }
+    }
+
+    void CheckNearMiss()
+    {
+        if (nearMissTriggered) return;
+
+        if (player == null) player = GameObject.FindWithTag("Player")?.transform;
+        if (player == null) return;
+
+        float distance = Vector3.Distance(transform.position, player.position);
+
+        if (distance < nearMissThreshold)
+        {
+            nearMissTriggered = true;
+
+            // 1. Skor artır
+            ScoreSystem.Instance?.AddAvoidBonus(10);
+
+            // 2. UI yazı göster
+            NearMissUIManager.Instance?.ShowNearMiss();
+
+            // 3. Ekran efekti (opsiyonel)
+            CameraShake.Instance?.Shake(0.2f, 0.1f); // varsa
+
+            // 4. (İleri) ses efekti
         }
     }
 }
