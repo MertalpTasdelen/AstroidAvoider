@@ -1,90 +1,94 @@
-# Asteroid Avoider 🚀
 
-Asteroid Avoider is an endless dodge-and-survive style mobile space game built with Unity. The player controls a spaceship, avoiding incoming asteroids of varying behaviors while experiencing a visually dynamic galactic environment.
+# 🚀 AstroidAvoider
 
----
+**AstroidAvoider** is a fast-paced 2D arcade-style mobile game developed in Unity. The goal is simple: survive as long as possible by dodging incoming asteroids — but the longer you last, the harder it gets.
 
-## 🎮 Core Gameplay
-- **Avoid to survive**: Player controls a spaceship with touch or mouse and avoids procedurally spawned asteroids.
-- **Dynamic difficulty**: The game increases in difficulty over time using a `DifficultyManager`, introducing faster spawns, zigzag/homing/splitting asteroids.
-- **Score system**: Players earn score based on time survived and extra points for avoiding asteroids.
-- **High score tracking**: Best score is saved using `PlayerPrefs` and displayed on game over screen.
+Inspired by classic bullet-dodging games and polished with modern feedback systems, **AstroidAvoider** offers smooth gameplay, dynamic difficulty, and responsive player feedback for a highly replayable experience.
 
 ---
 
-## 🚀 Features Implemented
+## 🎮 Current Features
 
-### ✅ Parallax Starfield Background
-- 3-layer parallax system: distant stars, nebula, and fast-moving foreground stars.
-- Background scrolls **opposite to player movement** for immersive depth (like [this reference](https://www.youtube.com/watch?v=_kzgG1n2eI0)).
-- Layers scroll faster as difficulty increases.
+### 🧠 Core Mechanics
+- **Dynamic Asteroid Spawning**: Random directions and physics-based force control.
+- **Zig-Zag & Homing Asteroids**: Intelligent enemies that track or trick the player.
+- **Difficulty Manager**: Game gets harder as the player performs better — faster asteroids, tighter movement patterns.
 
-### ✅ Asteroid Behaviors
-- **ZigZag**: Wobbly movement.
-- **Homing**: Locks onto player’s position at spawn.
-- **Split**: After delay, breaks into 2 smaller asteroids.
+### 🎯 Feedback & Feel
+- **Near Miss Detection System**:
+  - Asteroids passing dangerously close without collision trigger rewards.
+  - Combo-safe detection logic ensures fair and meaningful detection.
+- **Slow-Motion Effect**:
+  - 0.15s time slowdown when a near miss occurs — for dramatic impact.
+- **Visual + Audio Feedback**:
+  - Dynamic camera shake
+  - Boosted flame effect on the rocket
+  - Retro-style floating `+10` score icons
+  - Woosh-style sound cue
 
-### ✅ Performance Tracker
-- Tracks total survived time, asteroids avoided, and damage taken.
-- Powers dynamic difficulty system.
+### 📈 Score System
+- Time-based scoring + bonus for each successful avoid
+- High score tracking with `PlayerPrefs`
+- Fully resettable across sessions
 
-### ✅ Game Over System
-- Game ends on player crash.
-- Displays final and high score.
-- Includes "Play Again" and "Return to Menu" options with proper state resets.
-
-### 🔄 Trail + Flame Effect (Ongoing)
-- Added **TrailRenderer** to player ship.
-- Dynamically emits trail only during movement.
-- Added optional **fire sprite particle system** behind the ship for a rocket engine flame look.
+### 🛠 Polished UI Elements
+- Pause & Game Over Screens
+- Play Again & Return to Menu with full state reset
+- Difficulty indicator UI
+- Pixel-art style floating bonus prefab integrated into Canvas
 
 ---
 
-## 📁 Structure Overview
+## 📁 Project Structure Highlights
+
 ```
 Assets/
 ├── Scripts/
-│   ├── PlayerMovement.cs
-│   ├── AstreoidSpawner.cs
 │   ├── Astreoid.cs
+│   ├── PlayerMovement.cs
 │   ├── ScoreSystem.cs
 │   ├── GameOverHandler.cs
 │   ├── DifficultyManager.cs
+│   ├── NearMissFeedbackSystem.cs
+│   ├── FloatingBonusPrefab.cs
 │   └── PlayerPerformanceTracker.cs
-│
 ├── Prefabs/
-│   ├── AsteroidPrefabs
-│   └── BackgroundLayers
-│
-├── Sprites/
-│   ├── AA1.png (Fast stars)
-│   ├── AA2.png (Nebula)
-│   └── AA3.png (Distant stars)
-│
-├── Materials/
-│   └── Trail_Fire_Mat.mat
+│   └── FloatingBonusIcon.prefab
+├── Sounds/
+│   └── near_miss_ping.wav
+├── UI/
+│   ├── Canvas
+│   ├── TMP_Texts
+│   └── BonusSpawnPoint
 ```
 
 ---
 
-## 🔧 In Progress / To Do
-- [ ] Add coin system and in-game shop
-- [ ] Introduce power-ups (shield, slow time, score boost)
-- [ ] Ship skin unlocks
-- [ ] Mission/achievement system
-- [ ] Polished sound and particle feedbacks
+## 📅 Upcoming Features
+
+- 🏆 **Mission / Achievement System**
+  - Unlock rewards or multipliers for reaching milestones (e.g., 10 near misses)
+- 🛸 **Unlockable Ships**
+  - Different ship models with cosmetic or functional differences
 
 ---
 
-## 🧠 Built With
-- Unity 2022+
-- C# scripting
-- 2D URP Pipeline (optional)
+## 🧪 Built With
+
+- **Unity 2022+** (URP recommended)
+- **TextMeshPro** for pixel-perfect UI
+- **C#** scripting using Unity's MonoBehaviour system
 
 ---
 
-## 👨‍🚀 Credits & License
-This game is developed as a personal project by [@MertalpTasdelen](https://github.com/MertalpTasdelen) for gameplay experimentation and Unity mastery.
+## 👾 Screenshots
 
-Sprites used from OpenGameArt, Itch.io, and AI-generated sources under free/non-commercial licenses.
+*(to be added)*
 
+---
+
+## 📢 Contributing / Feedback
+
+If you're a developer, artist, or game feel enthusiast — feel free to fork the repo or create issues with suggestions and improvements!
+
+---

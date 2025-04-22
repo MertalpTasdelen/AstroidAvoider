@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Astreoid : MonoBehaviour
 {
-
     public bool useZigZag = false;
     public float zigzagFrequency = 5f;
     public float zigzagMagnitude = 1f;
@@ -14,7 +13,6 @@ public class Astreoid : MonoBehaviour
     private Transform player;
     private Rigidbody rb;
 
-
     private Vector3 direction;
     private float spawnTime;
 
@@ -24,34 +22,28 @@ public class Astreoid : MonoBehaviour
 
     private bool hasSplit = false;
 
-    public float nearMissThreshold = 1.5f; // Ayarlanabilir mesafe
-
-    private float closestDistance = Mathf.Infinity;
+    public float nearMissThreshold = 1.5f;
     private bool nearMissTriggered = false;
-    private bool hasBeenClose = false;
+    private bool inNearZone = false;
+    private float nearZoneEnterTime = 0f;
+    private float nearMissDurationThreshold = 0.3f;
 
     void Start()
     {
         spawnTime = Time.time;
-
-
         rb = GetComponent<Rigidbody>();
-
-        spawnTime = Time.time;
 
         if (rb != null)
         {
             direction = rb.linearVelocity.normalized;
         }
 
-        if (useHoming)
+        player = GameObject.FindWithTag("Player")?.transform;
+
+        if (useHoming && player != null)
         {
-            player = GameObject.FindWithTag("Player")?.transform;
-            if (player != null)
-            {
-                Vector3 directionToPlayer = (player.position - transform.position).normalized;
-                rb.linearVelocity = directionToPlayer * homingSpeed;
-            }
+            Vector3 directionToPlayer = (player.position - transform.position).normalized;
+            rb.linearVelocity = directionToPlayer * homingSpeed;
         }
     }
 
@@ -67,8 +59,7 @@ public class Astreoid : MonoBehaviour
         if (useZigZag)
         {
             float wave = Mathf.Sin((Time.time - spawnTime) * zigzagFrequency) * zigzagMagnitude;
-            Vector3 perp = Vector3.Cross(direction, Vector3.forward); // dik açı
-
+            Vector3 perp = Vector3.Cross(direction, Vector3.forward);
             transform.position += perp * wave * Time.deltaTime;
         }
 
@@ -76,7 +67,7 @@ public class Astreoid : MonoBehaviour
         {
             Vector3 toPlayer = (player.position - transform.position).normalized;
             Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity.normalized, toPlayer, homingStrength * Time.deltaTime);
-            rb.linearVelocity = newVelocity * rb.linearVelocity.magnitude; // mevcut hız korunur ama yön değişir
+            rb.linearVelocity = newVelocity * rb.linearVelocity.magnitude;
         }
 
         CheckNearMiss();
@@ -97,8 +88,7 @@ public class Astreoid : MonoBehaviour
             {
                 hasSplit = true;
                 SpawnSplitAsteroids();
-                Destroy(gameObject); // sadece Update’te çağrıyorsan
-                Debug.Log("Asteroid split!");
+                Destroy(gameObject);
             }
 
             playerHealth.Crash();
@@ -112,7 +102,7 @@ public class Astreoid : MonoBehaviour
         {
             hasSplit = true;
             SpawnSplitAsteroids();
-            Destroy(gameObject); // sadece Update’te çağrıyorsan
+            Destroy(gameObject);
         }
 
         PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
@@ -140,11 +130,10 @@ public class Astreoid : MonoBehaviour
             float splitForce = Random.Range(2f, 4f);
             rb.linearVelocity = randomDirection * splitForce;
 
-            // 🛡️ Bu asteroidler tekrar bölünmemeli!
             Astreoid splitScript = newAsteroid.GetComponent<Astreoid>();
             if (splitScript != null)
             {
-                splitScript.canSplit = false; // ❗️Bir daha bölünmesin
+                splitScript.canSplit = false;
                 splitScript.splitAsteroidPrefab = null;
                 splitScript.useHoming = false;
                 splitScript.useZigZag = false;
@@ -160,31 +149,36 @@ public class Astreoid : MonoBehaviour
             if (player == null) return;
         }
 
-        if (nearMissTriggered || player == null) return;
-
+        if (nearMissTriggered || Time.time - spawnTime < 1f) return;
 
         float distance = Vector3.Distance(transform.position, player.position);
 
-        // 1. En yakın olduğu mesafeyi takip et
-        if (distance < closestDistance)
+        if (distance < nearMissThreshold && !inNearZone)
         {
-            closestDistance = distance;
+            inNearZone = true;
+            nearZoneEnterTime = Time.time;
         }
 
-        // 2. Tehlikeli şekilde yaklaştıysa işaretle
-        if (distance < nearMissThreshold)
+        if (inNearZone && distance > nearMissThreshold)
         {
-            hasBeenClose = true;
-        }
+            float timeSpentClose = Time.time - nearZoneEnterTime;
 
-        // 3. Tehlikeli şekilde yaklaştı VE şimdi uzaklaşıyorsa → Near Miss!
-        if (hasBeenClose && distance > nearMissThreshold)
-        {
-            nearMissTriggered = true;
-            // Skor + UI + Ekran titretme
-            ScoreSystem.Instance?.AddAvoidBonus(10);
-            NearMissUIManager.Instance?.ShowNearMiss();
-            CameraShake.Instance?.Shake(0.2f, 0.1f);
+            if (timeSpentClose <= nearMissDurationThreshold && !nearMissTriggered)
+            {
+                nearMissTriggered = true;
+                ScoreSystem.Instance?.AddAvoidBonus(10);
+                NearMissFeedbackSystem.Instance?.TriggerNearMissFeedback();
+                // StartCoroutine(TemporarySlowMotion());
+            }
+
+            inNearZone = false;
         }
+    }
+
+    private System.Collections.IEnumerator TemporarySlowMotion()
+    {
+        Time.timeScale = 0.3f;
+        yield return new WaitForSecondsRealtime(0.15f);
+        Time.timeScale = 1f;
     }
 }
