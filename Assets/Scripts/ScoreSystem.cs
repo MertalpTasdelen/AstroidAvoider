@@ -61,7 +61,6 @@ public class ScoreSystem : MonoBehaviour
 
     public void AddScore(int amount)
     {
-        Debug.Log("Adding score: " + amount);
         if (!isCrashed)
         {
             score += amount;

@@ -24,9 +24,11 @@ public class Astreoid : MonoBehaviour
 
     private bool hasSplit = false;
 
-    [SerializeField] public float nearMissThreshold = 10.5f; // Ayarlanabilir mesafe
+    public float nearMissThreshold = 1.5f; // Ayarlanabilir mesafe
 
-    [SerializeField] private bool nearMissTriggered = false;
+    private float closestDistance = Mathf.Infinity;
+    private bool nearMissTriggered = false;
+    private bool hasBeenClose = false;
 
     void Start()
     {
@@ -44,7 +46,7 @@ public class Astreoid : MonoBehaviour
 
         if (useHoming)
         {
-            Transform player = GameObject.FindWithTag("Player")?.transform;
+            player = GameObject.FindWithTag("Player")?.transform;
             if (player != null)
             {
                 Vector3 directionToPlayer = (player.position - transform.position).normalized;
@@ -75,13 +77,6 @@ public class Astreoid : MonoBehaviour
             Vector3 toPlayer = (player.position - transform.position).normalized;
             Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity.normalized, toPlayer, homingStrength * Time.deltaTime);
             rb.linearVelocity = newVelocity * rb.linearVelocity.magnitude; // mevcut hız korunur ama yön değişir
-        }
-
-        if (!hasSplit && canSplit && Time.time - spawnTime > splitDelay)
-        {
-            hasSplit = true;
-            SpawnSplitAsteroids();
-            Destroy(gameObject);
         }
 
         CheckNearMiss();
@@ -159,27 +154,37 @@ public class Astreoid : MonoBehaviour
 
     void CheckNearMiss()
     {
-        if (nearMissTriggered) return;
+        if (player == null)
+        {
+            player = GameObject.FindWithTag("Player")?.transform;
+            if (player == null) return;
+        }
 
-        if (player == null) player = GameObject.FindWithTag("Player")?.transform;
-        if (player == null) return;
+        if (nearMissTriggered || player == null) return;
+
 
         float distance = Vector3.Distance(transform.position, player.position);
 
+        // 1. En yakın olduğu mesafeyi takip et
+        if (distance < closestDistance)
+        {
+            closestDistance = distance;
+        }
+
+        // 2. Tehlikeli şekilde yaklaştıysa işaretle
         if (distance < nearMissThreshold)
         {
+            hasBeenClose = true;
+        }
+
+        // 3. Tehlikeli şekilde yaklaştı VE şimdi uzaklaşıyorsa → Near Miss!
+        if (hasBeenClose && distance > nearMissThreshold)
+        {
             nearMissTriggered = true;
-
-            // 1. Skor artır
+            // Skor + UI + Ekran titretme
             ScoreSystem.Instance?.AddAvoidBonus(10);
-
-            // 2. UI yazı göster
             NearMissUIManager.Instance?.ShowNearMiss();
-
-            // 3. Ekran efekti (opsiyonel)
-            CameraShake.Instance?.Shake(0.2f, 0.1f); // varsa
-
-            // 4. (İleri) ses efekti
+            CameraShake.Instance?.Shake(0.2f, 0.1f);
         }
     }
 }

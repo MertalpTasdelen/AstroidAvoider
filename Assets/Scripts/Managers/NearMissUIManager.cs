@@ -7,10 +7,15 @@ public class NearMissUIManager : MonoBehaviour
     public static NearMissUIManager Instance;
     [SerializeField] private TMP_Text nearMissText;
 
+    private CanvasGroup canvasGroup;
+
     private void Awake()
     {
         Instance = this;
-        nearMissText.gameObject.SetActive(false);
+
+        canvasGroup = nearMissText.GetComponent<CanvasGroup>();
+        if (canvasGroup != null)
+            canvasGroup.alpha = 0f;
     }
 
     public void ShowNearMiss()
@@ -21,9 +26,13 @@ public class NearMissUIManager : MonoBehaviour
 
     private IEnumerator FlashNearMiss()
     {
-        nearMissText.gameObject.SetActive(true);
+        if (canvasGroup == null) yield break;
+
         nearMissText.text = "Near Miss!";
+        canvasGroup.alpha = 1f;
+
         yield return new WaitForSeconds(1.2f);
-        nearMissText.gameObject.SetActive(false);
+
+        canvasGroup.alpha = 0f;
     }
 }
