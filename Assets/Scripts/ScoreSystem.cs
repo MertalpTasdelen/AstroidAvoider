@@ -9,15 +9,10 @@ public class ScoreSystem : MonoBehaviour
     private bool isCrashed;
 
     private int highScore;
+    private float timeTracker;
 
     public static ScoreSystem Instance { get; private set; }
 
-    private void Start()
-    {
-        ResetScore();     // Skoru sıfırla
-        StartTimer();     // Skor sayacını başlat
-    }
-    
     private void Awake()
     {
         LoadHighScore();
@@ -40,7 +35,6 @@ public class ScoreSystem : MonoBehaviour
 
     private void SaveHighScore()
     {
-        Debug.Log("Saving high score: " + highScore);
         PlayerPrefs.SetInt("HighScore", highScore);
         PlayerPrefs.Save();
     }
@@ -56,6 +50,13 @@ public class ScoreSystem : MonoBehaviour
         {
             score += Time.deltaTime * scoreMultiplier;
             scoreText.text = Mathf.FloorToInt(score).ToString();
+
+            timeTracker += Time.deltaTime;
+            if (timeTracker >= 1f)
+            {
+                AchievementManager.Instance?.ReportProgress(AchievementType.TimeSurvived, 1);
+                timeTracker = 0f;
+            }
         }
     }
 
@@ -79,7 +80,6 @@ public class ScoreSystem : MonoBehaviour
         if (!isCrashed)
         {
             score += amount;
-            AddScore(amount);
             scoreText.text = Mathf.FloorToInt(score).ToString();
         }
     }
@@ -102,6 +102,7 @@ public class ScoreSystem : MonoBehaviour
     public void ResetScore()
     {
         score = 0f;
+        timeTracker = 0f;
         scoreText.text = "0";
     }
 }

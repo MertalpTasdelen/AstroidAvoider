@@ -1,14 +1,16 @@
+// DifficultyManager.cs (Harmanlanmış Sürüm)
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI; // renk efekti için gerekli
+using UnityEngine.UI;
 using System.Collections;
-using TMPro; // Eğer TMP Text kullanıyorsan
-
+using TMPro;
 
 public class DifficultyManager : MonoBehaviour
 {
+    public static DifficultyManager Instance;
+
     [SerializeField] private PlayerPerformanceTracker performanceTracker;
-    [SerializeField] private TMP_Text difficultyText; // Eğer TMP Text kullanıyorsan
+    [SerializeField] private TMP_Text difficultyText;
     public float checkInterval = 5f;
 
     private float timeSinceLastCheck = 0f;
@@ -19,15 +21,26 @@ public class DifficultyManager : MonoBehaviour
     public float shakeMagnitude = 0.2f;
 
     [Header("Screen Flash Settings")]
-    public Image screenOverlayImage; // UI Canvas altındaki yarı saydam Image
-    public Color flashColor = new Color(1f, 0f, 0f, 0.25f); // Hafif kırmızı
+    public Image screenOverlayImage;
+    public Color flashColor = new Color(1f, 0f, 0f, 0.25f);
     public float flashDuration = 0.3f;
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Update()
     {
         timeSinceLastCheck += Time.deltaTime;
-        // Debug.Log("DifficultyManager is running: " + timeSinceLastCheck);
-
 
         if (timeSinceLastCheck >= checkInterval)
         {
@@ -40,18 +53,21 @@ public class DifficultyManager : MonoBehaviour
     {
         float score = performanceTracker.asteroidsAvoided - performanceTracker.timesHit;
 
-        int newLevel = Mathf.Clamp(1 + Mathf.FloorToInt(score / 5f), 1, 10); // her 5 puanda 1 seviye
+        int newLevel = Mathf.Clamp(1 + Mathf.FloorToInt(score / 5f), 1, 10);
 
         if (newLevel > difficultyLevel)
         {
             difficultyLevel = newLevel;
+            Debug.Log($"[DIFFICULTY] New difficulty level set to: {difficultyLevel}");
 
-            AstreoidSpawner.Instance.SetDifficultyLevel(difficultyLevel);
+            AstreoidSpawner.Instance?.SetDifficultyLevel(difficultyLevel);
             StartCoroutine(SinusoidalShake());
             StartCoroutine(FlashScreen());
 
             if (difficultyText != null)
                 difficultyText.text = $"Difficulty: {difficultyLevel}";
+
+            AchievementManager.Instance?.ReportProgress(AchievementType.DifficultyReached, difficultyLevel);
         }
     }
 
@@ -85,8 +101,14 @@ public class DifficultyManager : MonoBehaviour
         screenOverlayImage.color = Color.clear;
     }
 
-    public int GetCurrentLevel()
+    public int GetCurrentDifficulty()
     {
         return difficultyLevel;
+    }
+
+    public void ResetDifficulty()
+    {
+        difficultyLevel = 1;
+        timeSinceLastCheck = 0f;
     }
 }

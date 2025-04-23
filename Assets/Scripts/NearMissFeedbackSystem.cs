@@ -34,17 +34,22 @@ public class NearMissFeedbackSystem : MonoBehaviour
         BoostFlameEffect();
         PlaySoundEffect();
         cameraShake?.Shake(0.1f, 0.05f);
+
+        AchievementManager.Instance?.ReportProgress(AchievementType.NearMiss, 1);
     }
 
     public void ShowFloatingBonus()
     {
         if (bonusIconPrefab == null || bonusSpawnPoint == null) return;
 
-        Instantiate(
+        GameObject icon = Instantiate(
             bonusIconPrefab,
             bonusSpawnPoint.position,
             Quaternion.identity,
             bonusSpawnPoint);
+
+        RectTransform rt = icon.GetComponent<RectTransform>();
+        rt.anchoredPosition = Vector2.zero;
     }
 
     private void BoostFlameEffect()

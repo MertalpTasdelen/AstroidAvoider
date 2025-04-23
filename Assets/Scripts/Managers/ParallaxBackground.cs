@@ -11,14 +11,14 @@ public class ParallaxBackground : MonoBehaviour
 
     public ParallaxLayer[] layers;
     public PlayerMovements player;
-    public DifficultyManager difficultyManager;
+    public DifficultyManager difficultyManager; 
 
     void Update()
     {
         if (player == null || difficultyManager == null) return;
 
         Vector3 movement = player.GetCurrentMovementDirection();
-        int difficulty = difficultyManager.GetCurrentLevel(); // Bunu eklediğini varsayıyorum
+        int difficulty = difficultyManager.GetCurrentDifficulty(); 
 
         foreach (var layer in layers)
         {
