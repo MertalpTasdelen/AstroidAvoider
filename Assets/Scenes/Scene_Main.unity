@@ -3148,6 +3148,7 @@ GameObject:
   - component: {fileID: 1987583514}
   - component: {fileID: 1987583516}
   - component: {fileID: 1987583517}
+  - component: {fileID: 1987583518}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -3202,6 +3203,19 @@ MonoBehaviour:
   screenOverlayImage: {fileID: 1083577675}
   flashColor: {r: 1, g: 0, b: 0, a: 0.25}
   flashDuration: 0.3
+--- !u!114 &1987583518
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1987583511}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d65214b56b814e048913d16f40f03f36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  achievements: []
 --- !u!1 &2136799122
 GameObject:
   m_ObjectHideFlags: 0
@@ -3283,7 +3297,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 40.96, y: 20.48}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1

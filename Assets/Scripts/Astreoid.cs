@@ -62,13 +62,13 @@ public class Astreoid : MonoBehaviour
             Vector3 perp = Vector3.Cross(direction, Vector3.forward);
             transform.position += perp * wave * Time.deltaTime;
         }
-
-        if (useHoming && player != null)
-        {
-            Vector3 toPlayer = (player.position - transform.position).normalized;
-            Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity.normalized, toPlayer, homingStrength * Time.deltaTime);
-            rb.linearVelocity = newVelocity * rb.linearVelocity.magnitude;
-        }
+        //With this astreoid, the homing is not working as expected. It is not following the player correctly.
+        // if (useHoming && player != null)
+        // {
+        //     Vector3 toPlayer = (player.position - transform.position).normalized;
+        //     Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity.normalized, toPlayer, homingStrength * Time.deltaTime);
+        //     rb.linearVelocity = newVelocity * rb.linearVelocity.magnitude;
+        // }
 
         CheckNearMiss();
     }

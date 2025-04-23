@@ -108,7 +108,15 @@ public class DifficultyManager : MonoBehaviour
 
     public void ResetDifficulty()
     {
+        Debug.Log($"[DIFFICULTY] Before: {difficultyLevel}");
+
         difficultyLevel = 1;
         timeSinceLastCheck = 0f;
+        performanceTracker?.ResetPerformance();  // ← önemli ekleme
+
+
+        Debug.Log($"[DIFFICULTY] After: {difficultyLevel}");
+
     }
+
 }

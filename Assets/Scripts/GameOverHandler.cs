@@ -39,6 +39,7 @@ public class GameOverHandler : MonoBehaviour
     {
         ScoreSystem.Instance.ResetScore();
         ScoreSystem.Instance.StartTimer();
+        DifficultyManager.Instance?.ResetDifficulty();
         // Load the game scene
         UnityEngine.SceneManagement.SceneManager.LoadScene(1);
     }
@@ -56,8 +57,10 @@ public class GameOverHandler : MonoBehaviour
         if (ScoreSystem.Instance != null)
         {
             Destroy(ScoreSystem.Instance.gameObject);
+            DifficultyManager.Instance?.ResetDifficulty();
+
         }
-        
+
         UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 

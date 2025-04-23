@@ -18,10 +18,13 @@ public class PlayerPerformanceTracker : MonoBehaviour
     public void RegisterAsteroidAvoided()
     {
         asteroidsAvoided++;
+
         if (ScoreSystem.Instance != null)
         {
             ScoreSystem.Instance.AddAvoidBonus(10); // her kaçınma 10 puan
         }
+
+        AchievementManager.Instance?.ReportProgress(AchievementType.AsteroidsDodged, 1);
     }
 
     public void RegisterHit()
@@ -32,6 +35,12 @@ public class PlayerPerformanceTracker : MonoBehaviour
     public void ResetStats()
     {
         elapsedTime = 0f;
+        asteroidsAvoided = 0;
+        timesHit = 0;
+    }
+
+    public void ResetPerformance()
+    {
         asteroidsAvoided = 0;
         timesHit = 0;
     }
