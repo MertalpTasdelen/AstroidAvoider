@@ -5,14 +5,15 @@ using System.Collections.Generic;
 
 public class AchievementMenuUI : MonoBehaviour
 {
-    [Header("UI References")]
-    [SerializeField] private GameObject achievementItemPrefab;
-    [SerializeField] private Transform contentContainer;
-    [SerializeField] private GameObject panelRoot;
+    [Header("References")]
+    [SerializeField] private GameObject achievementItemPrefab; // Bizim oluşturduğumuz prefab
+    [SerializeField] private Transform contentContainer; // Scroll View içindeki Content
+    [SerializeField] private GameObject panelRoot; // AchievementPanel kökü
+    [SerializeField] private GameObject mainMenuRoot;
 
     private void Start()
     {
-        panelRoot.SetActive(false); // Panel ilk başta kapalı
+        panelRoot.SetActive(false);
     }
 
     public void TogglePanel()
@@ -20,11 +21,13 @@ public class AchievementMenuUI : MonoBehaviour
         if (panelRoot.activeSelf)
         {
             panelRoot.SetActive(false);
+            mainMenuRoot.SetActive(true);
             ClearAchievements();
         }
         else
         {
             panelRoot.SetActive(true);
+            mainMenuRoot.SetActive(false);
             PopulateAchievements();
         }
     }
@@ -35,20 +38,29 @@ public class AchievementMenuUI : MonoBehaviour
 
         List<AchievementData> achievements = AchievementManager.Instance.GetAchievements(false);
 
-        Debug.Log($"Number of achievements: {achievements.Count}");
-
-        foreach (AchievementData data in achievements)
+        foreach (var data in achievements)
         {
             GameObject item = Instantiate(achievementItemPrefab, contentContainer);
-            TextMeshProUGUI titleText = item.transform.Find("TitleText").GetComponent<TextMeshProUGUI>();
-            TextMeshProUGUI descriptionText = item.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>();
-            Image checkmark = item.transform.Find("Checkmark").GetComponent<Image>();
-            CanvasGroup canvasGroup = item.GetComponent<CanvasGroup>();
+
+            // --- Data Bağlama ---
+            var titleText = item.transform.Find("TitleText").GetComponent<TextMeshProUGUI>();
+            var descriptionText = item.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>();
+            var starIcon = item.transform.Find("Icon").GetComponent<Image>();
+            var canvasGroup = item.GetComponent<CanvasGroup>();
 
             titleText.text = data.title;
             descriptionText.text = data.description;
-            checkmark.enabled = data.isCompleted;
-            canvasGroup.alpha = data.isCompleted ? 1f : 0.4f;
+
+            if (data.isCompleted)
+            {
+                canvasGroup.alpha = 1f;
+                starIcon.color = Color.yellow; // Başarılmış görevlerde yıldız sarı
+            }
+            else
+            {
+                canvasGroup.alpha = 0.4f;
+                starIcon.color = Color.white; // Tamamlanmamış görevlerde yıldız beyaz
+            }
         }
     }
 
