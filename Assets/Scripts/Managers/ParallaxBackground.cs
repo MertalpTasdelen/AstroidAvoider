@@ -37,18 +37,26 @@ public class ParallaxBackground : MonoBehaviour
                 {
                     tile.position += Vector3.left * layer.speedMultiplier * Time.deltaTime;
 
-                    // Sonsuz yatay scroll
                     if (tile.position.x <= -layer.tileWidth)
                     {
                         float maxX = FindFarthestRight(layer.tiles);
                         tile.position = new Vector3(maxX + layer.tileWidth, tile.position.y, tile.position.z);
                     }
+                    else if (tile.position.x >= layer.tileWidth)
+                    {
+                        float minX = FindFarthestLeft(layer.tiles);
+                        tile.position = new Vector3(minX - layer.tileWidth, tile.position.y, tile.position.z);
+                    }
 
-                    // Sonsuz dikey scroll
                     if (tile.position.y <= -layer.tileHeight)
                     {
                         float maxY = FindFarthestTop(layer.tiles);
                         tile.position = new Vector3(tile.position.x, maxY + layer.tileHeight, tile.position.z);
+                    }
+                    else if (tile.position.y >= layer.tileHeight)
+                    {
+                        float minY = FindFarthestBottom(layer.tiles);
+                        tile.position = new Vector3(tile.position.x, minY - layer.tileHeight, tile.position.z);
                     }
                 }
             }
@@ -72,11 +80,21 @@ public class ParallaxBackground : MonoBehaviour
                     float maxX = FindFarthestRight(layer.tiles);
                     tile.position = new Vector3(maxX + layer.tileWidth, tile.position.y, tile.position.z);
                 }
+                else if (tile.position.x >= layer.tileWidth)
+                {
+                    float minX = FindFarthestLeft(layer.tiles);
+                    tile.position = new Vector3(minX - layer.tileWidth, tile.position.y, tile.position.z);
+                }
 
                 if (tile.position.y <= -layer.tileHeight)
                 {
                     float maxY = FindFarthestTop(layer.tiles);
                     tile.position = new Vector3(tile.position.x, maxY + layer.tileHeight, tile.position.z);
+                }
+                else if (tile.position.y >= layer.tileHeight)
+                {
+                    float minY = FindFarthestBottom(layer.tiles);
+                    tile.position = new Vector3(tile.position.x, minY - layer.tileHeight, tile.position.z);
                 }
             }
         }
@@ -86,21 +104,35 @@ public class ParallaxBackground : MonoBehaviour
     {
         float maxX = float.MinValue;
         foreach (var tile in tiles)
-        {
             if (tile.position.x > maxX)
                 maxX = tile.position.x;
-        }
         return maxX;
+    }
+
+    float FindFarthestLeft(Transform[] tiles)
+    {
+        float minX = float.MaxValue;
+        foreach (var tile in tiles)
+            if (tile.position.x < minX)
+                minX = tile.position.x;
+        return minX;
     }
 
     float FindFarthestTop(Transform[] tiles)
     {
         float maxY = float.MinValue;
         foreach (var tile in tiles)
-        {
             if (tile.position.y > maxY)
                 maxY = tile.position.y;
-        }
         return maxY;
+    }
+
+    float FindFarthestBottom(Transform[] tiles)
+    {
+        float minY = float.MaxValue;
+        foreach (var tile in tiles)
+            if (tile.position.y < minY)
+                minY = tile.position.y;
+        return minY;
     }
 }
