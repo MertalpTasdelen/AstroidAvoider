@@ -98,6 +98,7 @@ public class Astreoid : MonoBehaviour
 
     private void OnBecameInvisible()
     {
+
         if (canSplit && !hasSplit && Time.time - spawnTime > splitDelay)
         {
             hasSplit = true;
