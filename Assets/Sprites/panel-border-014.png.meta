@@ -1,10 +1,10 @@
 fileFormatVersion: 2
-guid: db4673d6f7680b14ab0a56ac61690763
+guid: c84dcfb1feb791f4da91f5896bc65920
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -8145341394838308794
-    second: Neon_borders_0
+      213: -4705472619856834520
+    second: panel-border-014_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Neon_borders_0
+      name: panel-border-014_0
       rect:
         serializedVersion: 2
-        x: 48
-        y: 48
-        width: 951
-        height: 945
+        x: 0
+        y: 0
+        width: 96
+        height: 96
       alignment: 0
       pivot: {x: 0, y: 0}
-      border: {x: 128, y: 128, z: 128, w: 128}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 648b062482fe5fe80800000000000000
-      internalID: -8145341394838308794
+      spriteID: 8205b19359dc2beb0800000000000000
+      internalID: -4705472619856834520
       vertices: []
       indices: 
       edges: []
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Neon_borders_0: -8145341394838308794
+      panel-border-014_0: -4705472619856834520
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
