@@ -80,10 +80,12 @@ public class AchievementManager : MonoBehaviour
         // TODO: Load from PlayerPrefs/JSON. This is a temporary hardcoded list.
         achievements = new List<AchievementData>
         {
-            new AchievementData { id = "survive_60", title = "Stay Alive!", description = "Survive 60 seconds", targetAmount = 30, isDaily = true, type = AchievementType.TimeSurvived },
-            new AchievementData { id = "near_3", title = "Close Call", description = "Perform 3 near misses", targetAmount = 3, isDaily = true, type = AchievementType.NearMiss },
-            new AchievementData { id = "total_asteroids", title = "Dodger", description = "Avoid 1000 asteroids", targetAmount = 10, isDaily = false, type = AchievementType.AsteroidsDodged },
+            new AchievementData { id = "survive_60", title = "Stay Alive!", description = "Survive 60 seconds", targetAmount = 30, isDaily = true, type = AchievementType.TimeSurvived, isCompleted = true },
+            new AchievementData { id = "near_3", title = "Close Call", description = "Perform 3 near misses", targetAmount = 3, isDaily = true, type = AchievementType.NearMiss,isCompleted = true },
+            new AchievementData { id = "total_asteroids", title = "Dodger", description = "Avoid 1000 asteroids", targetAmount = 10, isDaily = false, type = AchievementType.AsteroidsDodged, isCompleted = true },
+            new AchievementData { id = "difficulty_5", title = "Veteran Pilot", description = "Reach difficulty level 5", targetAmount = 5, isDaily = false, type = AchievementType.DifficultyReached, isCompleted = true },
             new AchievementData { id = "difficulty_10", title = "Elite Pilot", description = "Reach difficulty level 10", targetAmount = 6, isDaily = false, type = AchievementType.DifficultyReached },
+            new AchievementData { id = "play_5_sessions", title = "Frequent Flyer", description = "Play 5 game sessions", targetAmount = 5, isDaily = false, type = AchievementType.SessionsPlayed, isCompleted = true },    
         };
     }
 
