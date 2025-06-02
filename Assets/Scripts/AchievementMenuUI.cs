@@ -13,19 +13,23 @@ public class AchievementMenuUI : MonoBehaviour
 
     private void Start()
     {
+        Debug.Log("AchievementMenuUI Start called");
         panelRoot.SetActive(false);
     }
 
     public void TogglePanel()
     {
+        Debug.Log("TogglePanel called");
         if (panelRoot.activeSelf)
         {
+            Debug.Log("Panel is active, closing it");
             panelRoot.SetActive(false);
             mainMenuRoot.SetActive(true);
             ClearAchievements();
         }
         else
         {
+            Debug.Log("Panel is not active, opening it");
             panelRoot.SetActive(true);
             mainMenuRoot.SetActive(false);
             PopulateAchievements();
@@ -71,4 +75,17 @@ public class AchievementMenuUI : MonoBehaviour
             Destroy(child.gameObject);
         }
     }
+    
+    public GameObject PanelRoot
+    {
+        get { return panelRoot; }
+        set { panelRoot = value; }
+    }
+
+    public GameObject MainMenuRoot
+    {
+        get { return mainMenuRoot; }
+        set { mainMenuRoot = value; }
+    }
+
 }
