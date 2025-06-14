@@ -14,6 +14,12 @@ public class AchievementMenuUI : MonoBehaviour
     private GameObject mainMenuRoot;
     private Button closeButton;
 
+    private void Awake()
+    {
+        FindStaticReferences();
+        // BindCloseButton();
+    }
+
     private void OnEnable()
     {
         SceneManager.sceneLoaded += HandleSceneLoaded;
@@ -29,68 +35,80 @@ public class AchievementMenuUI : MonoBehaviour
         RefreshReferences();
 
         if (panelRoot != null)
-            panelRoot.SetActive(false);
+        {
+            panelRoot.SetActive(false);        
+        }
+        
+        BindCloseButton();
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RefreshReferences();
+        BindCloseButton();  // Also re-bind button in case scene reloads
     }
 
-    public void RefreshReferences()
+    private void FindStaticReferences()
     {
-        if (panelRoot == null || panelRoot.Equals(null))
+        GameObject achievementsMenu = GameObject.Find("AchivementsMenu");
+        if (achievementsMenu != null)
         {
-            GameObject achievementsMenu = GameObject.Find("AchivementsMenu");
-            if (achievementsMenu != null)
+            Transform canvas = achievementsMenu.transform.Find("Canvas");
+            if (canvas != null)
             {
-                Transform canvas = achievementsMenu.transform.Find("Canvas");
-                if (canvas != null)
+                panelRoot = canvas.gameObject;
+
+                Transform contentTransform = null;
+                foreach (var t in panelRoot.GetComponentsInChildren<Transform>(true))
                 {
-                    panelRoot = canvas.gameObject;
+                    if (t.name == "Content")
+                    {
+                        contentTransform = t;
+                        break;
+                    }
+                }
 
-                    // ✅ Robust Content search
-                    Transform contentTransform = null;
-                    foreach (var t in canvas.GetComponentsInChildren<Transform>(true))
-                    {
-                        if (t.name == "Content")
-                        {
-                            contentTransform = t;
-                            break;
-                        }
-                    }
-
-                    if (contentTransform != null)
-                    {
-                        contentContainer = contentTransform;
-                    }
-                    else
-                    {
-                        Debug.LogError("[AchievementMenuUI] Content not found under Canvas.");
-                    }
-
-                    // ✅ Robust CloseButton search
-                    closeButton = canvas.GetComponentInChildren<Button>(true);
-                    if (closeButton != null)
-                    {
-                        closeButton.onClick.RemoveAllListeners();
-                        closeButton.onClick.AddListener(TogglePanel);
-                    }
-                    else
-                    {
-                        Debug.LogError("[AchievementMenuUI] CloseButton not found inside Canvas.");
-                    }
+                if (contentTransform != null)
+                {
+                    contentContainer = contentTransform;
+                }
+                else
+                {
+                    Debug.LogError("[AchievementMenuUI] Content not found under Canvas.");
                 }
             }
         }
 
-        if (mainMenuRoot == null || mainMenuRoot.Equals(null))
+        mainMenuRoot = GameObject.Find("MainMenu");
+    }
+
+    private void BindCloseButton()
+    {
+        if (panelRoot == null)
+            return;
+
+        closeButton = panelRoot.GetComponentInChildren<Button>(true);
+        if (closeButton != null)
         {
-            mainMenuRoot = GameObject.Find("MainMenu");
+            closeButton.onClick.RemoveAllListeners();
+            closeButton.onClick.AddListener(TogglePanel);
+        }
+        else
+        {
+            Debug.LogError("[AchievementMenuUI] CloseButton not found inside Canvas.");
         }
     }
 
+    public void RefreshReferences()
+    {
+        // Allow RefreshReferences to safely recover if objects get destroyed & reloaded
 
+        if (panelRoot == null || panelRoot.Equals(null))
+            FindStaticReferences();
+
+        if (closeButton == null || closeButton.Equals(null))
+            BindCloseButton();
+    }
 
     public void TogglePanel()
     {

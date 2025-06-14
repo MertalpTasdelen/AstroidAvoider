@@ -51,7 +51,7 @@ public class MainMenu : MonoBehaviour
     {
         if (achievementsUI != null)
         {
-            achievementsUI.RefreshReferences(); 
+            achievementsUI.RefreshReferences(); // 🔑 Key fix for first time issue
             achievementsUI.TogglePanel();
         }
         else
