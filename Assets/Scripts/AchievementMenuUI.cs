@@ -1,37 +1,117 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using System.Collections.Generic;
 
 public class AchievementMenuUI : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private GameObject achievementItemPrefab; // Bizim oluşturduğumuz prefab
-    [SerializeField] private Transform contentContainer; // Scroll View içindeki Content
-    [SerializeField] private GameObject panelRoot; // AchievementPanel kökü
-    [SerializeField] private GameObject mainMenuRoot;
+    [SerializeField] private GameObject achievementItemPrefab;
+
+    private Transform contentContainer;
+    private GameObject panelRoot;
+    private GameObject mainMenuRoot;
+    private Button closeButton;
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += HandleSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= HandleSceneLoaded;
+    }
 
     private void Start()
     {
-        Debug.Log("AchievementMenuUI Start called");
-        panelRoot.SetActive(false);
+        RefreshReferences();
+
+        if (panelRoot != null)
+            panelRoot.SetActive(false);
     }
+
+    private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        RefreshReferences();
+    }
+
+    public void RefreshReferences()
+    {
+        if (panelRoot == null || panelRoot.Equals(null))
+        {
+            GameObject achievementsMenu = GameObject.Find("AchivementsMenu");
+            if (achievementsMenu != null)
+            {
+                Transform canvas = achievementsMenu.transform.Find("Canvas");
+                if (canvas != null)
+                {
+                    panelRoot = canvas.gameObject;
+
+                    // ✅ Robust Content search
+                    Transform contentTransform = null;
+                    foreach (var t in canvas.GetComponentsInChildren<Transform>(true))
+                    {
+                        if (t.name == "Content")
+                        {
+                            contentTransform = t;
+                            break;
+                        }
+                    }
+
+                    if (contentTransform != null)
+                    {
+                        contentContainer = contentTransform;
+                    }
+                    else
+                    {
+                        Debug.LogError("[AchievementMenuUI] Content not found under Canvas.");
+                    }
+
+                    // ✅ Robust CloseButton search
+                    closeButton = canvas.GetComponentInChildren<Button>(true);
+                    if (closeButton != null)
+                    {
+                        closeButton.onClick.RemoveAllListeners();
+                        closeButton.onClick.AddListener(TogglePanel);
+                    }
+                    else
+                    {
+                        Debug.LogError("[AchievementMenuUI] CloseButton not found inside Canvas.");
+                    }
+                }
+            }
+        }
+
+        if (mainMenuRoot == null || mainMenuRoot.Equals(null))
+        {
+            mainMenuRoot = GameObject.Find("MainMenu");
+        }
+    }
+
+
 
     public void TogglePanel()
     {
-        Debug.Log("TogglePanel called");
+        if (panelRoot == null)
+        {
+            Debug.LogError("[AchievementMenuUI] panelRoot is not assigned!");
+            return;
+        }
+
         if (panelRoot.activeSelf)
         {
-            Debug.Log("Panel is active, closing it");
             panelRoot.SetActive(false);
-            mainMenuRoot.SetActive(true);
+            if (mainMenuRoot != null)
+                mainMenuRoot.SetActive(true);
             ClearAchievements();
         }
         else
         {
-            Debug.Log("Panel is not active, opening it");
             panelRoot.SetActive(true);
-            mainMenuRoot.SetActive(false);
+            if (mainMenuRoot != null)
+                mainMenuRoot.SetActive(false);
             PopulateAchievements();
         }
     }
@@ -46,7 +126,6 @@ public class AchievementMenuUI : MonoBehaviour
         {
             GameObject item = Instantiate(achievementItemPrefab, contentContainer);
 
-            // --- Data Bağlama ---
             var titleText = item.transform.Find("TitleText").GetComponent<TextMeshProUGUI>();
             var descriptionText = item.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>();
             var starIcon = item.transform.Find("Icon").GetComponent<Image>();
@@ -58,34 +137,23 @@ public class AchievementMenuUI : MonoBehaviour
             if (data.isCompleted)
             {
                 canvasGroup.alpha = 1f;
-                starIcon.color = Color.yellow; // Başarılmış görevlerde yıldız sarı
+                starIcon.color = Color.yellow;
             }
             else
             {
                 canvasGroup.alpha = 0.4f;
-                starIcon.color = Color.white; // Tamamlanmamış görevlerde yıldız beyaz
+                starIcon.color = Color.white;
             }
         }
     }
 
     private void ClearAchievements()
     {
+        if (contentContainer == null) return;
+
         foreach (Transform child in contentContainer)
         {
             Destroy(child.gameObject);
         }
     }
-    
-    public GameObject PanelRoot
-    {
-        get { return panelRoot; }
-        set { panelRoot = value; }
-    }
-
-    public GameObject MainMenuRoot
-    {
-        get { return mainMenuRoot; }
-        set { mainMenuRoot = value; }
-    }
-
 }

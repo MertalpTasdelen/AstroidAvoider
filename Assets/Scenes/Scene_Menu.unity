@@ -1418,8 +1418,8 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1059112345}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 2.676937}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 0, y: 0, z: 0}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1428,7 +1428,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -827.1812, y: -816.3459}
+  m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
 --- !u!1 &1068569253
@@ -2687,9 +2687,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   achievementItemPrefab: {fileID: 1801689277635380058, guid: 08476182e243a064c8a6fdb84600873e, type: 3}
-  contentContainer: {fileID: 1157395296}
-  panelRoot: {fileID: 1059112345}
-  mainMenuRoot: {fileID: 1932901248}
 --- !u!4 &1816300824
 Transform:
   m_ObjectHideFlags: 0
@@ -2755,6 +2752,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a1e1efc988bedbd48953535b664a0605, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  achievementsUI: {fileID: 0}
 --- !u!4 &1932901250
 Transform:
   m_ObjectHideFlags: 0
@@ -3182,9 +3180,9 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1816300823}
-        m_TargetAssemblyTypeName: AchievementMenuUI, Assembly-CSharp
-        m_MethodName: TogglePanel
+      - m_Target: {fileID: 1932901249}
+        m_TargetAssemblyTypeName: MainMenu, Assembly-CSharp
+        m_MethodName: OpenAchievements
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
