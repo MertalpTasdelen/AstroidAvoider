@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 public class MainMenu : MonoBehaviour
 {
     [SerializeField] private AchievementMenuUI achievementsUI;
+    [SerializeField] private GlobalScoreboardMenuUI globalScoreboardUI;
+
 
     private void OnEnable()
     {

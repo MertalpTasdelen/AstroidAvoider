@@ -33,11 +33,15 @@ public class ScoreSystem : MonoBehaviour
         highScore = PlayerPrefs.GetInt("HighScore", 0);
     }
 
-    private void SaveHighScore()
-    {
-        PlayerPrefs.SetInt("HighScore", highScore);
-        PlayerPrefs.Save();
-    }
+private void SaveHighScore()
+{
+    PlayerPrefs.SetInt("HighScore", highScore);
+    PlayerPrefs.Save();
+
+    // Save to global leaderboard
+    string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+    GlobalScoreBoardManager.Instance?.AddScore(playerName, highScore);
+}
 
     public int GetHighScore()
     {
