@@ -7,6 +7,10 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GlobalScoreboardMenuUI globalScoreboardUI;
 
 
+    public void ShowMainMenu()
+    {
+        gameObject.SetActive(true);
+    }
     private void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
