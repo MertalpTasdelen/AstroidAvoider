@@ -6,7 +6,9 @@ using UnityEngine.SceneManagement;
 
 public class GlobalScoreboardMenuUI : MonoBehaviour
 {
-    private GameObject scoreItemPrefab;
+    [Header("References")]
+    [SerializeField] private GameObject scoreItemPrefab;  // ✅ Prefab'ı Inspector’dan assign edeceğiz
+
     private Transform contentRoot;
     private Button closeButton;
     private GameObject panelRoot;
@@ -57,10 +59,19 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
                 {
                     if (t.name == "Content")
                         contentRoot = t;
-                    else if (t.name == "ScoreItem")
-                        scoreItemPrefab = t.gameObject;
                 }
+
+                if (contentRoot == null)
+                    Debug.LogError("[GlobalScoreboardMenuUI] Content not found under Canvas.");
             }
+            else
+            {
+                Debug.LogError("[GlobalScoreboardMenuUI] Canvas not found under GlobalScoreboardPanel.");
+            }
+        }
+        else
+        {
+            Debug.LogError("[GlobalScoreboardMenuUI] GlobalScoreboardPanel not found in scene.");
         }
 
         mainMenuRoot = GameObject.Find("MainMenu");
@@ -76,6 +87,10 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
         {
             closeButton.onClick.RemoveAllListeners();
             closeButton.onClick.AddListener(TogglePanel);
+        }
+        else
+        {
+            Debug.LogError("[GlobalScoreboardMenuUI] CloseButton not found inside Canvas.");
         }
     }
 
@@ -98,6 +113,12 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
     private void PopulateScores()
     {
         ClearItems();
+
+        if (scoreItemPrefab == null)
+        {
+            Debug.LogError("[GlobalScoreboardMenuUI] scoreItemPrefab is null! Assign it via Inspector.");
+            return;
+        }
 
         List<GlobalScoreEntry> topScores = GlobalScoreBoardManager.Instance.GetTopScores();
 

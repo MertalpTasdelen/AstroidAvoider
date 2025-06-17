@@ -5,9 +5,9 @@ public class ScoreSystem : MonoBehaviour
 {
     [SerializeField] private TMP_Text scoreText;
     [SerializeField] private float scoreMultiplier;
+
     private float score;
     private bool isCrashed;
-
     private int highScore;
     private float timeTracker;
 
@@ -33,15 +33,23 @@ public class ScoreSystem : MonoBehaviour
         highScore = PlayerPrefs.GetInt("HighScore", 0);
     }
 
-private void SaveHighScore()
-{
-    PlayerPrefs.SetInt("HighScore", highScore);
-    PlayerPrefs.Save();
+    private void SaveHighScore()
+    {
+        PlayerPrefs.SetInt("HighScore", highScore);
+        PlayerPrefs.Save();
 
-    // Save to global leaderboard
-    string playerName = PlayerPrefs.GetString("PlayerName", "Player");
-    GlobalScoreBoardManager.Instance?.AddScore(playerName, highScore);
-}
+        string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+        GlobalScoreBoardManager.Instance?.AddScore(playerName, highScore);
+    }
+
+    private void UpdateHighScoreIfNeeded()
+    {
+        if (score > highScore)
+        {
+            highScore = Mathf.FloorToInt(score);
+            SaveHighScore();
+        }
+    }
 
     public int GetHighScore()
     {
@@ -61,6 +69,8 @@ private void SaveHighScore()
                 AchievementManager.Instance?.ReportProgress(AchievementType.TimeSurvived, 1);
                 timeTracker = 0f;
             }
+
+            UpdateHighScoreIfNeeded();
         }
     }
 
@@ -70,12 +80,7 @@ private void SaveHighScore()
         {
             score += amount;
             scoreText.text = Mathf.FloorToInt(score).ToString();
-
-            if (score > highScore)
-            {
-                highScore = Mathf.FloorToInt(score);
-                SaveHighScore();
-            }
+            UpdateHighScoreIfNeeded();
         }
     }
 
@@ -85,6 +90,7 @@ private void SaveHighScore()
         {
             score += amount;
             scoreText.text = Mathf.FloorToInt(score).ToString();
+            UpdateHighScoreIfNeeded();
         }
     }
 
