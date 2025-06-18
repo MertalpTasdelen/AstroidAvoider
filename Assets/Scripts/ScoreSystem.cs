@@ -21,6 +21,13 @@ public class ScoreSystem : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            
+            // ensure leaderboard has at least our current saved high score
+            if (highScore > 0)
+            {
+                string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+                GlobalScoreBoardManager.Instance?.AddScore(playerName, highScore);
+            }
         }
         else
         {

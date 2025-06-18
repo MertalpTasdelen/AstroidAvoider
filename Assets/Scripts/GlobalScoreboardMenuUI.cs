@@ -101,6 +101,9 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
 
         if (closeButton == null || closeButton.Equals(null))
             BindCloseButton();
+
+        if (mainMenuRoot == null || mainMenuRoot.Equals(null))
+            mainMenuRoot = GameObject.Find("MainMenu");
     }
 
     public void ShowLeaderboard()

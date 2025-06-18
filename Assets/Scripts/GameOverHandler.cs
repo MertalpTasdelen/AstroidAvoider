@@ -24,6 +24,10 @@ public class GameOverHandler : MonoBehaviour
             int finalScore = Mathf.FloorToInt(scoreRef.GetScore());
             int highScore = scoreRef.GetHighScore();
 
+            // 👇 High score güncellenmese bile skor kaydı yapılmalı:
+            string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+            GlobalScoreBoardManager.Instance?.AddScore(playerName, finalScore);
+
             gameOverText.text = $"Game Over\nScore: {finalScore}\nHigh Score: {highScore}";
         }
         else
@@ -33,6 +37,7 @@ public class GameOverHandler : MonoBehaviour
 
         gameOverUI.SetActive(true);
     }
+
 
 
     public void RestartGame()
