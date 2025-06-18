@@ -125,8 +125,8 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
         foreach (var entry in topScores)
         {
             GameObject item = Instantiate(scoreItemPrefab, contentRoot);
-            item.transform.Find("NameText").GetComponent<TMP_Text>().text = entry.playerName;
-            item.transform.Find("ScoreText").GetComponent<TMP_Text>().text = entry.score.ToString();
+            item.transform.Find("Canvas/NameText").GetComponent<TMP_Text>().text = entry.playerName;
+            item.transform.Find("Canvas/ScoreText").GetComponent<TMP_Text>().text = entry.score.ToString();
         }
     }
 
