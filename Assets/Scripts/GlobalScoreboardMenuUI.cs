@@ -55,14 +55,15 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
             {
                 panelRoot = canvas.gameObject;
 
-                foreach (var t in panelRoot.GetComponentsInChildren<Transform>(true))
-                {
-                    if (t.name == "Content")
-                        contentRoot = t;
-                }
+                // 🎯 Doğrudan içerik yolu
+                contentRoot = canvas.Find("ScrollView/Viewport/Content");
+                Debug.Log("[GlobalScoreboardMenuUI] Content root founded under ScrollView/Viewport!");
+
 
                 if (contentRoot == null)
-                    Debug.LogError("[GlobalScoreboardMenuUI] Content not found under Canvas.");
+                {
+                    Debug.LogError("[GlobalScoreboardMenuUI] Content not found under ScrollView/Viewport!");
+                }
             }
             else
             {
@@ -76,6 +77,7 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
 
         mainMenuRoot = GameObject.Find("MainMenu");
     }
+
 
     private void BindCloseButton()
     {
@@ -124,12 +126,15 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
         }
 
         List<GlobalScoreEntry> topScores = GlobalScoreBoardManager.Instance.GetTopScores();
+        Debug.Log("[GlobalScoreboardMenuUI] Top Scores size: " + topScores.Count);
 
         foreach (var entry in topScores)
         {
             GameObject item = Instantiate(scoreItemPrefab, contentRoot);
-            item.transform.Find("Canvas/NameText").GetComponent<TMP_Text>().text = entry.playerName;
-            item.transform.Find("Canvas/ScoreText").GetComponent<TMP_Text>().text = entry.score.ToString();
+            Debug.Log("[GlobalScoreboardMenuUI] Created score item for player: " + entry.playerName);
+        
+            item.transform.Find("NameText").GetComponent<TMP_Text>().text = entry.playerName;
+            item.transform.Find("ScoreText").GetComponent<TMP_Text>().text = entry.score.ToString();
         }
     }
 

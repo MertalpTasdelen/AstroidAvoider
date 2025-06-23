@@ -25,6 +25,8 @@ public class GlobalScoreBoardManager : MonoBehaviour
 
     public void AddScore(string playerName, int score)
     {
+        Debug.Log($"[LEADERBOARD] AddScore called for {playerName} → {score}");
+
         GlobalScoreEntry existing = globalScores.FirstOrDefault(e => e.playerName == playerName);
         if (existing != null)
         {
