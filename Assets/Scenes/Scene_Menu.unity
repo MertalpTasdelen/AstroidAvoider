@@ -619,6 +619,7 @@ GameObject:
   - component: {fileID: 167973500}
   - component: {fileID: 167973499}
   - component: {fileID: 167973501}
+  - component: {fileID: 167973502}
   m_Layer: 0
   m_Name: GlobalScoreboardPanel
   m_TagString: Untagged
@@ -667,6 +668,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 028453bf967c903438cd7fc98fe72cd3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &167973502
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 167973498}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: db60119d597ce824385d40739d3ee5c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  apiUrl: https://api.yeninesilevim.com/api/scores/top
 --- !u!1 &204122626
 GameObject:
   m_ObjectHideFlags: 0

@@ -125,14 +125,23 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
             return;
         }
 
-        List<GlobalScoreEntry> topScores = GlobalScoreBoardManager.Instance.GetTopScores();
-        Debug.Log("[GlobalScoreboardMenuUI] Top Scores size: " + topScores.Count);
+        if (LeaderboardApiClient.Instance != null)
+        {
+            StartCoroutine(LeaderboardApiClient.Instance.FetchScores(OnScoresFetched));
+        }
+        else
+        {
+            Debug.LogError("[GlobalScoreboardMenuUI] LeaderboardApiClient instance not found.");
+        }
+    }
 
-        foreach (var entry in topScores)
+    private void OnScoresFetched(List<GlobalScoreEntry> scores)
+    {
+        scores.Sort((a, b) => b.score.CompareTo(a.score));
+
+        foreach (var entry in scores)
         {
             GameObject item = Instantiate(scoreItemPrefab, contentRoot);
-            Debug.Log("[GlobalScoreboardMenuUI] Created score item for player: " + entry.playerName);
-        
             item.transform.Find("NameText").GetComponent<TMP_Text>().text = entry.playerName;
             item.transform.Find("ScoreText").GetComponent<TMP_Text>().text = entry.score.ToString();
         }
