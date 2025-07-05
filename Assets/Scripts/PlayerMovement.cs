@@ -7,6 +7,7 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float maxVelocity;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private GameObject playerFlame;
+    [SerializeField] private DynamicJoystick joystick;
 
 
     private Rigidbody rb;
@@ -44,21 +45,10 @@ public class PlayerMovements : MonoBehaviour
     }
     private void ProcessInput()
     {
-        if (Touchscreen.current.primaryTouch.press.isPressed)
-        {
-            Vector2 touchPosition = Touchscreen.current.primaryTouch.position.ReadValue();
+        float horizontal = joystick.Horizontal;
+        float vertical = joystick.Vertical;
 
-            Vector3 worldPosition = mainCamera.ScreenToWorldPoint(Input.mousePosition);
-
-            movementDirection = worldPosition - transform.position;
-            movementDirection.z = 0f;
-            movementDirection.Normalize();
-
-        }
-        else
-        {
-            movementDirection = Vector3.zero;
-        }
+        movementDirection = new Vector3(horizontal, vertical, 0f).normalized;
     }
 
     private void KeepPlayerOnScreen()

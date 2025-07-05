@@ -1,8 +1,3 @@
-"""
-Anonymous FastAPI service for submitting and retrieving game scores.
-No personal or project-specific information included.
-"""
-
 from fastapi import FastAPI
 from pydantic import BaseModel
 import psycopg2
@@ -13,7 +8,7 @@ load_dotenv()
 
 app = FastAPI()
 
-DB_URL = os.getenv("DATABASE_URL", "")
+DB_URL = os.getenv("DATABASE_URL", "postgresql://postgres:102030@localhost:5432/postgres")
 
 def get_connection():
     return psycopg2.connect(DB_URL)
@@ -30,7 +25,7 @@ def get_top_scores(limit: int = 10):
     result = [{"playerName": row[0], "score": row[1]} for row in cur.fetchall()]
     cur.close()
     conn.close()
-    return result
+    return {"scores": result} 
 
 @app.post("/scores")
 def submit_score(score: Score):
