@@ -139,13 +139,41 @@ public class GlobalScoreboardMenuUI : MonoBehaviour
     {
         scores.Sort((a, b) => b.score.CompareTo(a.score));
 
+        string currentPlayerName = PlayerPrefs.GetString("PlayerName", "Player");
+        int rank = 1;
+
         foreach (var entry in scores)
         {
             GameObject item = Instantiate(scoreItemPrefab, contentRoot);
+
+            item.transform.Find("RankText").GetComponent<TMP_Text>().text = rank.ToString();
             item.transform.Find("NameText").GetComponent<TMP_Text>().text = entry.playerName;
             item.transform.Find("ScoreText").GetComponent<TMP_Text>().text = entry.score.ToString();
+
+            // 🎯 Eğer bu satır oyuncunun değilse, rengini soluk yap
+            if (entry.playerName != currentPlayerName)
+            {
+                MakeItemFaded(item);
+            }
+
+            rank++;
         }
     }
+
+
+    private void MakeItemFaded(GameObject item)
+    {
+        float fadedAlpha = 0.4f;
+
+        foreach (var text in item.GetComponentsInChildren<TMP_Text>())
+        {
+            Color c = text.color;
+            c.a = fadedAlpha;
+            text.color = c;
+        }
+    }
+
+
 
     private void ClearItems()
     {
