@@ -1573,8 +1573,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec4fbd1d66e10eb4096d4a78fd639bc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  forceMagnitude: 100
-  maxVelocity: 6
+  forceMagnitude: 50
+  maxVelocity: 8
   rotationSpeed: 5
   playerFlame: {fileID: 36514683}
   joystick: {fileID: 1886186748}

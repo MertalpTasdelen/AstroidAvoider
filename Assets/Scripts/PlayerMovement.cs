@@ -13,29 +13,46 @@ public class PlayerMovements : MonoBehaviour
     private Rigidbody rb;
     private Camera mainCamera;
     private Vector3 movementDirection;
+    private Vector3 lastKnownDirection = Vector3.zero;
+    private float inputIntensity = 0f;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
+
+        // rb.linearDamping = 1.5f; // Çok hafif fren etkisi
     }
 
     void Update()
     {
-        playerFlame.SetActive(movementDirection != Vector3.zero);
+        float horizontal = joystick.Horizontal;
+        float vertical = joystick.Vertical;
+        Vector2 joystickVector = new Vector2(horizontal, vertical);
+        inputIntensity = Mathf.Clamp01(joystickVector.magnitude);
+
+        bool isJoystickActive = inputIntensity > 0.01f;
+
+        playerFlame.SetActive(isJoystickActive);
+
+        rb.linearDamping = isJoystickActive ? 0f : 0.05f;
 
         ProcessInput();
-
         KeepPlayerOnScreen();
-
         RotatePlayerFace();
     }
 
+
+
     void FixedUpdate()
     {
-        if (movementDirection == Vector3.zero) { return; }
+        if (inputIntensity > 0.01f)
+        {
+            // Joystick aktifken kuvvet uygula
+            rb.AddForce(lastKnownDirection * forceMagnitude * inputIntensity, ForceMode.Force);
+        }
 
-        rb.AddForce(movementDirection * forceMagnitude, ForceMode.Force);
-
+        // Hızı maksimumla sınırlamaya devam
         rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxVelocity);
     }
 
@@ -48,8 +65,20 @@ public class PlayerMovements : MonoBehaviour
         float horizontal = joystick.Horizontal;
         float vertical = joystick.Vertical;
 
-        movementDirection = new Vector3(horizontal, vertical, 0f).normalized;
+        Vector2 joystickVector = new Vector2(horizontal, vertical);
+        inputIntensity = Mathf.Clamp01(joystickVector.magnitude);
+
+        if (inputIntensity > 0.01f)
+        {
+            movementDirection = new Vector3(horizontal, vertical, 0f).normalized;
+            lastKnownDirection = movementDirection;
+        }
+        else
+        {
+            movementDirection = Vector3.zero;
+        }
     }
+
 
     private void KeepPlayerOnScreen()
     {
