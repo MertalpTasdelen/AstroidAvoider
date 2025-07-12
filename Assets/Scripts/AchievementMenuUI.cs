@@ -36,10 +36,14 @@ public class AchievementMenuUI : MonoBehaviour
 
         if (panelRoot != null)
         {
-            panelRoot.SetActive(false);        
+            panelRoot.SetActive(false);
         }
-        
+
         BindCloseButton();
+
+        string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+        StartCoroutine(AchievementApiClient.Instance.FetchPlayerAchievements(playerName, PopulateAchievements));
+
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -130,17 +134,16 @@ public class AchievementMenuUI : MonoBehaviour
             panelRoot.SetActive(true);
             if (mainMenuRoot != null)
                 mainMenuRoot.SetActive(false);
-            PopulateAchievements();
+            string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+            StartCoroutine(AchievementApiClient.Instance.FetchPlayerAchievements(playerName, PopulateAchievements));
         }
     }
 
-    private void PopulateAchievements()
+    private void PopulateAchievements(List<AchievementApiClient.PlayerAchievement> playerAchievements)
     {
         ClearAchievements();
 
-        List<AchievementData> achievements = AchievementManager.Instance.GetAchievements(false);
-
-        foreach (var data in achievements)
+        foreach (var data in playerAchievements)
         {
             GameObject item = Instantiate(achievementItemPrefab, contentContainer);
 
@@ -149,10 +152,10 @@ public class AchievementMenuUI : MonoBehaviour
             var starIcon = item.transform.Find("Icon").GetComponent<Image>();
             var canvasGroup = item.GetComponent<CanvasGroup>();
 
-            titleText.text = data.title;
-            descriptionText.text = data.description;
+            titleText.text = data.achievement_id; // istersen backend'den title da getir
+            descriptionText.text = $"Progress: {data.current_amount}";
 
-            if (data.isCompleted)
+            if (data.is_completed)
             {
                 canvasGroup.alpha = 1f;
                 starIcon.color = Color.yellow;

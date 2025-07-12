@@ -32,6 +32,9 @@ public class GameOverHandler : MonoBehaviour
             {
                 StartCoroutine(LeaderboardApiClient.Instance.SubmitScore(playerName, highScore));
             }
+            
+            AchievementApiClient.Instance?.SubmitProgress("session_5", 1);
+            AchievementApiClient.Instance?.SubmitProgress("session_20", 1);
         }
         else
         {

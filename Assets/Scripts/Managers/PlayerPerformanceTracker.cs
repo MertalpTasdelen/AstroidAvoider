@@ -24,7 +24,8 @@ public class PlayerPerformanceTracker : MonoBehaviour
             ScoreSystem.Instance.AddAvoidBonus(10); // her kaçınma 10 puan
         }
 
-        AchievementManager.Instance?.ReportProgress(AchievementType.AsteroidsDodged, 1);
+        AchievementApiClient.Instance?.SubmitProgress("dodge_50", 1);
+        AchievementApiClient.Instance?.SubmitProgress("dodge_200", 1);
     }
 
     public void RegisterHit()

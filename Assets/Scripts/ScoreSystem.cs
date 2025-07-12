@@ -21,7 +21,7 @@ public class ScoreSystem : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            
+
             // ensure leaderboard has at least our current saved high score
             if (highScore > 0)
             {
@@ -73,7 +73,9 @@ public class ScoreSystem : MonoBehaviour
             timeTracker += Time.deltaTime;
             if (timeTracker >= 1f)
             {
-                AchievementManager.Instance?.ReportProgress(AchievementType.TimeSurvived, 1);
+                AchievementApiClient.Instance?.SubmitProgress("survive_60", 1);
+                AchievementApiClient.Instance?.SubmitProgress("survive_180", 1);
+
                 timeTracker = 0f;
             }
 

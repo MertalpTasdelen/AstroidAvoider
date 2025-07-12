@@ -4658,18 +4658,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1816300822}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d65214b56b814e048913d16f40f03f36, type: 3}
+  m_Script: {fileID: 11500000, guid: d67671099b189f44fab25cd152e898c3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  achievements:
-  - id: 
-    title: 
-    description: 
-    targetAmount: 0
-    currentAmount: 0
-    isCompleted: 0
-    isDaily: 0
-    type: 0
+  apiBaseUrl: https://api.yeninesilevim.com
 --- !u!1 &1932901248
 GameObject:
   m_ObjectHideFlags: 0

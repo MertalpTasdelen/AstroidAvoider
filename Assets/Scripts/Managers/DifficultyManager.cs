@@ -67,7 +67,10 @@ public class DifficultyManager : MonoBehaviour
             if (difficultyText != null)
                 difficultyText.text = $"Difficulty: {difficultyLevel}";
 
-            AchievementManager.Instance?.ReportProgress(AchievementType.DifficultyReached, difficultyLevel);
+            if (difficultyLevel >= 5)
+                AchievementApiClient.Instance?.SubmitProgress("difficulty_5", 1);
+            if (difficultyLevel >= 10)
+                AchievementApiClient.Instance?.SubmitProgress("difficulty_10", 1);
         }
     }
 
