@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Astreoid : MonoBehaviour
 {
+    [HideInInspector] public GameObject prefabReference;
     public bool useZigZag = false;
     public float zigzagFrequency = 5f;
     public float zigzagMagnitude = 1f;
@@ -53,7 +54,8 @@ public class Astreoid : MonoBehaviour
         {
             hasSplit = true;
             SpawnSplitAsteroids();
-            Destroy(gameObject);
+            AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
+            return;
         }
 
         if (useZigZag)
@@ -88,11 +90,12 @@ public class Astreoid : MonoBehaviour
             {
                 hasSplit = true;
                 SpawnSplitAsteroids();
-                Destroy(gameObject);
+                AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
+                return;
             }
 
             playerHealth.Crash();
-            Destroy(gameObject);
+            AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
         }
     }
 
@@ -103,7 +106,8 @@ public class Astreoid : MonoBehaviour
         {
             hasSplit = true;
             SpawnSplitAsteroids();
-            Destroy(gameObject);
+            AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
+            return;
         }
 
         PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
@@ -112,7 +116,7 @@ public class Astreoid : MonoBehaviour
             tracker.RegisterAsteroidAvoided();
         }
 
-        Destroy(gameObject);
+        AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
     }
 
     private void SpawnSplitAsteroids()
@@ -121,10 +125,9 @@ public class Astreoid : MonoBehaviour
 
         for (int i = 0; i < 2; i++)
         {
-            GameObject newAsteroid = Instantiate(
-                splitAsteroidPrefab,
-                transform.position,
-                Quaternion.identity);
+            GameObject newAsteroid = AstreoidPool.Instance != null
+                ? AstreoidPool.Instance.Get(splitAsteroidPrefab, transform.position, Quaternion.identity)
+                : Instantiate(splitAsteroidPrefab, transform.position, Quaternion.identity);
 
             Rigidbody rb = newAsteroid.GetComponent<Rigidbody>();
             Vector3 randomDirection = Random.insideUnitCircle.normalized;
@@ -138,6 +141,7 @@ public class Astreoid : MonoBehaviour
                 splitScript.splitAsteroidPrefab = null;
                 splitScript.useHoming = false;
                 splitScript.useZigZag = false;
+                splitScript.prefabReference = splitAsteroidPrefab;
             }
         }
     }

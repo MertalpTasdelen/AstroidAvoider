@@ -82,16 +82,18 @@ public class AstreoidSpawner : MonoBehaviour
         Vector3 worldSpawnPoint = mainCamera.ViewportToWorldPoint(spawnPosition);
         worldSpawnPoint.z = 0;
 
-        GameObject astreoidInstance = Instantiate(
-            astreoidPrefabs[Random.Range(0, astreoidPrefabs.Length)],
-            worldSpawnPoint,
-            Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)));
+        GameObject prefab = astreoidPrefabs[Random.Range(0, astreoidPrefabs.Length)];
+        GameObject astreoidInstance = AstreoidPool.Instance != null
+            ? AstreoidPool.Instance.Get(prefab, worldSpawnPoint, Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)))
+            : Instantiate(prefab, worldSpawnPoint, Quaternion.Euler(0f, 0f, Random.Range(0f, 360f)));
 
         Rigidbody rb = astreoidInstance.GetComponent<Rigidbody>();
 
         rb.linearVelocity = force.normalized * Random.Range(forceRange.x, forceRange.y);
 
         Astreoid asteroidScript = astreoidInstance.GetComponent<Astreoid>();
+        if (asteroidScript != null)
+            asteroidScript.prefabReference = prefab;
 
         if (asteroidScript != null)
         {
