@@ -11,6 +11,7 @@ Inspired by classic bullet-dodging games and polished with modern feedback syste
 
 ### 🧠 Core Mechanics
 - **Dynamic Asteroid Spawning**: Random directions and physics-based force control.
+- **Asteroid Pooling**: Recycles asteroid objects to reduce lag from frequent instantiation.
 - **Zig-Zag & Homing Asteroids**: Intelligent enemies that track or trick the player.
 - **Difficulty Manager**: Game gets harder as the player performs better — faster asteroids, tighter movement patterns.
 
