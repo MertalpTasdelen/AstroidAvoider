@@ -1,4 +1,3 @@
-// DifficultyManager.cs (Harmanlanmış Sürüm)
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -15,6 +14,7 @@ public class DifficultyManager : MonoBehaviour
 
     private float timeSinceLastCheck = 0f;
     private int difficultyLevel = 1;
+    private int lastStageShown = 0;
 
     [Header("Camera Shake Settings")]
     public float shakeDuration = 0.6f;
@@ -55,23 +55,40 @@ public class DifficultyManager : MonoBehaviour
 
         int newLevel = Mathf.Clamp(1 + Mathf.FloorToInt(score / 5f), 1, 10);
 
-        if (newLevel > difficultyLevel)
+        int newStage = Mathf.FloorToInt((float)newLevel / 3f) + 1;
+
+        if (newStage > lastStageShown)
+        {
+            lastStageShown = newStage;
+
+            StageTransitionManager.Instance?.PlayStageTransition(
+                newStage - 1,
+                () =>
+                {
+                    difficultyLevel = newLevel;
+                    ApplyDifficultyFeedback();
+                });
+        }
+        else if (newLevel > difficultyLevel)
         {
             difficultyLevel = newLevel;
-            Debug.Log($"[DIFFICULTY] New difficulty level set to: {difficultyLevel}");
-
-            AstreoidSpawner.Instance?.SetDifficultyLevel(difficultyLevel);
-            StartCoroutine(SinusoidalShake());
-            StartCoroutine(FlashScreen());
-
-            if (difficultyText != null)
-                difficultyText.text = $"Difficulty: {difficultyLevel}";
-
-            if (difficultyLevel >= 5)
-                AchievementApiClient.Instance?.SubmitProgress("difficulty_5", 1);
-            if (difficultyLevel >= 10)
-                AchievementApiClient.Instance?.SubmitProgress("difficulty_10", 1);
+            ApplyDifficultyFeedback();
         }
+    }
+
+    private void ApplyDifficultyFeedback()
+    {
+        AstreoidSpawner.Instance?.SetDifficultyLevel(difficultyLevel);
+        StartCoroutine(SinusoidalShake());
+        StartCoroutine(FlashScreen());
+
+        if (difficultyText != null)
+            difficultyText.text = $"Difficulty: {difficultyLevel}";
+
+        if (difficultyLevel >= 5)
+            AchievementApiClient.Instance?.SubmitProgress("difficulty_5", 1);
+        if (difficultyLevel >= 10)
+            AchievementApiClient.Instance?.SubmitProgress("difficulty_10", 1);
     }
 
     private IEnumerator SinusoidalShake()
@@ -115,11 +132,8 @@ public class DifficultyManager : MonoBehaviour
 
         difficultyLevel = 1;
         timeSinceLastCheck = 0f;
-        performanceTracker?.ResetPerformance();  // ← önemli ekleme
-
+        performanceTracker?.ResetPerformance();
 
         Debug.Log($"[DIFFICULTY] After: {difficultyLevel}");
-
     }
-
 }
