@@ -50,6 +50,21 @@ public class StageTransitionManager : MonoBehaviour
         onComplete?.Invoke();
     }
 
+    public void PlayBonusTransition(System.Action onComplete = null)
+    {
+        StartCoroutine(BonusTransitionRoutine(onComplete));
+    }
+
+    private IEnumerator BonusTransitionRoutine(System.Action onComplete)
+    {
+        Time.timeScale = 0.3f;
+
+        yield return StartCoroutine(ShowText("⚡ BONUS STAGE", stageIncomingClip));
+
+        Time.timeScale = 1f;
+
+        onComplete?.Invoke();
+    }
 
     private IEnumerator ShowText(string text, AudioClip sfx)
     {
