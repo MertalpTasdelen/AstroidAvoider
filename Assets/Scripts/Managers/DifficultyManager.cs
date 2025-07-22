@@ -10,11 +10,11 @@ public class DifficultyManager : MonoBehaviour
 
     [SerializeField] private PlayerPerformanceTracker performanceTracker;
     [SerializeField] private TMP_Text difficultyText;
-    public float checkInterval = 5f;
+    public float checkInterval = 1f;
 
     private float timeSinceLastCheck = 0f;
     private int difficultyLevel = 1;
-    private int lastStageShown = 0;
+    private int lastStageShown = 1;
 
     [Header("Camera Shake Settings")]
     public float shakeDuration = 0.6f;
@@ -57,6 +57,8 @@ public class DifficultyManager : MonoBehaviour
 
         int newStage = Mathf.FloorToInt((float)newLevel / 3f) + 1;
 
+        // Debug.Log($"New Level: {newLevel}, New Stage: {newStage}, Last Stage Shown: {lastStageShown}");
+
         if (newStage > lastStageShown)
         {
             lastStageShown = newStage;
@@ -74,6 +76,12 @@ public class DifficultyManager : MonoBehaviour
             difficultyLevel = newLevel;
             ApplyDifficultyFeedback();
         }
+    }
+
+    public void ForceCheck()
+    {
+        AdjustDifficulty();
+        timeSinceLastCheck = 0f;
     }
 
     private void ApplyDifficultyFeedback()
@@ -128,12 +136,14 @@ public class DifficultyManager : MonoBehaviour
 
     public void ResetDifficulty()
     {
-        Debug.Log($"[DIFFICULTY] Before: {difficultyLevel}");
+        Debug.Log($"[STAGE] Before: {difficultyLevel}");
 
         difficultyLevel = 1;
         timeSinceLastCheck = 0f;
         performanceTracker?.ResetPerformance();
+        lastStageShown = 1;
 
-        Debug.Log($"[DIFFICULTY] After: {difficultyLevel}");
+
+        Debug.Log($"[STAGE] After: {difficultyLevel}");
     }
 }

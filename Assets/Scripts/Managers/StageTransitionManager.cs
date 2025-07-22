@@ -11,8 +11,8 @@ public class StageTransitionManager : MonoBehaviour
     [SerializeField] private AudioSource sfxSource;
     [SerializeField] private AudioClip stageCompleteClip;
     [SerializeField] private AudioClip stageIncomingClip;
-    [SerializeField] private float fadeDuration = 0.6f;
-    [SerializeField] private float messageDisplayTime = 1.5f;
+    [SerializeField] private float fadeDuration = 0.4f;
+    [SerializeField] private float messageDisplayTime = 1.0f;
 
     private CanvasGroup canvasGroup;
 
@@ -22,13 +22,11 @@ public class StageTransitionManager : MonoBehaviour
         canvasGroup = stageText.GetComponent<CanvasGroup>();
     }
 
-    // ✅ Gelişmiş versiyon: callback destekli
     public void PlayStageTransition(int stageNumber, Action onTransitionComplete)
     {
         StartCoroutine(TransitionRoutine(stageNumber, onTransitionComplete));
     }
 
-    // ✅ Basit versiyon: callback yok
     public void PlayStageTransition(int stageNumber)
     {
         PlayStageTransition(stageNumber, null);

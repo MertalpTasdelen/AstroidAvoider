@@ -2908,8 +2908,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -275, y: -100}
-  m_SizeDelta: {x: 450, y: 100}
+  m_AnchoredPosition: {x: -375, y: -100}
+  m_SizeDelta: {x: 750, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1148479258
 MonoBehaviour:
@@ -2931,7 +2931,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Stage:1
+  m_text: Difficulty:1
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 4d881e07cfe2797479e5d6bd1fa62a6c, type: 2}
   m_sharedMaterial: {fileID: 3710097639189249364, guid: 4d881e07cfe2797479e5d6bd1fa62a6c, type: 2}
@@ -5035,11 +5035,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ded433222236a448bd19ee147de89f3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  andrioidGameID: 
-  iosGameID: 
+  andrioidGameID: 5821327
+  iosGameID: 5821326
   testMode: 1
-  androidAdUnitID: 
-  iosAdUnitID: 
+  androidAdUnitID: Rewarded_Android
+  iosAdUnitID: Rewarded_iOS
 --- !u!1 &2036036407
 GameObject:
   m_ObjectHideFlags: 0

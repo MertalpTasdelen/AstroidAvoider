@@ -26,11 +26,15 @@ public class PlayerPerformanceTracker : MonoBehaviour
 
         AchievementApiClient.Instance?.SubmitProgress("dodge_50", 1);
         AchievementApiClient.Instance?.SubmitProgress("dodge_200", 1);
+
+        DifficultyManager.Instance?.ForceCheck();
     }
 
     public void RegisterHit()
     {
         timesHit++;
+        DifficultyManager.Instance?.ForceCheck();
+
     }
 
     public void ResetStats()
