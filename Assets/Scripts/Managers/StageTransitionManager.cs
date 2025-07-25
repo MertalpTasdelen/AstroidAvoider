@@ -59,7 +59,7 @@ public class StageTransitionManager : MonoBehaviour
     {
         Time.timeScale = 0.3f;
 
-        yield return StartCoroutine(ShowText("⚡ BONUS STAGE", stageIncomingClip));
+        yield return StartCoroutine(ShowText("BONUS STAGE", stageIncomingClip));
 
         Time.timeScale = 1f;
 
