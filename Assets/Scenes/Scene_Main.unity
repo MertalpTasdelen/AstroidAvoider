@@ -1967,7 +1967,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65e930e98016ad046a9182b84b74fffb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  laserPrefab: {fileID: 4257812618152626136, guid: 0cee7de4246eb4740ae757d9671d8886, type: 3}
+  laserPrefab: {fileID: 4068850958318207260, guid: ff962d75877ed4645a10e82de5f839da, type: 3}
   firePoint: {fileID: 1119184798}
   fireRate: 0.3
   laserSpeed: 10
@@ -2962,7 +2962,7 @@ Transform:
   m_GameObject: {fileID: 1119184797}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 7.43}
+  m_LocalPosition: {x: 0, y: 0, z: 7.2}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

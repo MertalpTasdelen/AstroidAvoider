@@ -26,23 +26,27 @@ public class LaserShooter : MonoBehaviour
 
     private void FireLaser()
     {
-        Debug.Log("[LASER] FireLaser çağrıldı.");
+        // Geminin baktığı yön (transform.up → world space yönü)
+        Vector3 direction = firePoint.up;
+        Vector3 spawnPos = firePoint.position + direction * 0.5f;
+        spawnPos.z = 0f;
 
-        Vector3 direction = firePoint.right;
-        Vector3 spawnPos = firePoint.position + direction * 0.3f;
+        // Prefab'ı direction yönüne döndürerek instantiate et
+        Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction); // 2D uyumlu
+        GameObject laser = Instantiate(laserPrefab, spawnPos, rotation);
 
-        GameObject laser = Instantiate(laserPrefab, spawnPos, firePoint.rotation);
-
+        // Rigidbody'ye doğru yönü ver
         Rigidbody rb = laser.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.linearVelocity = firePoint.up * laserSpeed;
-            Debug.Log("Lazer ateşlendi, pozisyon: " + spawnPos);
-
+            rb.linearVelocity = direction * laserSpeed;
         }
 
-        // patlama efektini veya lazer sesini burada tetikleyebilirsin
+        Debug.Log($"[LASER] Lazer ateşlendi, pozisyon: {spawnPos}, yön: {direction}");
     }
+
+
+
 
     public void EnableShooting()
     {
