@@ -26,12 +26,19 @@ public class LaserShooter : MonoBehaviour
 
     private void FireLaser()
     {
-        GameObject laser = Instantiate(laserPrefab, firePoint.position, firePoint.rotation);
+        Debug.Log("[LASER] FireLaser çağrıldı.");
+
+        Vector3 direction = firePoint.right;
+        Vector3 spawnPos = firePoint.position + direction * 0.3f;
+
+        GameObject laser = Instantiate(laserPrefab, spawnPos, firePoint.rotation);
 
         Rigidbody rb = laser.GetComponent<Rigidbody>();
         if (rb != null)
         {
             rb.linearVelocity = firePoint.up * laserSpeed;
+            Debug.Log("Lazer ateşlendi, pozisyon: " + spawnPos);
+
         }
 
         // patlama efektini veya lazer sesini burada tetikleyebilirsin

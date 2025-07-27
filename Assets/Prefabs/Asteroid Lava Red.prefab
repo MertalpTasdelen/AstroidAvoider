@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 6816704265959084482}
   m_Layer: 0
   m_Name: Asteroid Lava Red
-  m_TagString: Untagged
+  m_TagString: Asteroid
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -151,3 +151,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a69d469b8babbc843a9e73bb96bd4c69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  prefabReference: {fileID: 0}
+  useZigZag: 0
+  zigzagFrequency: 5
+  zigzagMagnitude: 1
+  useHoming: 0
+  homingStrength: 2
+  homingSpeed: 4
+  canSplit: 1
+  splitDelay: 2
+  splitAsteroidPrefab: {fileID: 0}
+  nearMissThreshold: 1.5

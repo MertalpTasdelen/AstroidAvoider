@@ -9,6 +9,8 @@ public class BonusStageManager : MonoBehaviour
 
     private bool isBonusActive = false;
     private float bonusTimer = 0f;
+    // Bonus aşamasında oyuncu gemisinin önündeki lazeri kontrol edecek script
+    private LaserShooter playerLaser;
 
     private void Awake()
     {
@@ -16,6 +18,10 @@ public class BonusStageManager : MonoBehaviour
             Instance = this;
         else
             Destroy(gameObject);
+
+        // Oyuncu gemisindeki LaserShooter bileşenini bul
+        if (playerLaser == null)
+            playerLaser = FindFirstObjectByType<LaserShooter>();
     }
 
     private void Update()
@@ -40,6 +46,12 @@ public class BonusStageManager : MonoBehaviour
         StageTransitionManager.Instance.PlayBonusTransition(() =>
         {
             Debug.Log("[BONUS STAGE] Başladı!");
+
+            // Lazer ateşlemeyi başlat
+            if (playerLaser == null)
+                playerLaser = FindFirstObjectByType<LaserShooter>();
+
+            playerLaser?.EnableShooting();
 
             // Buraya sonraki aşamalarda ekleyeceğiz:
             // - Lazer aç

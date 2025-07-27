@@ -11,9 +11,9 @@ GameObject:
   - component: {fileID: 1095860872292170294}
   - component: {fileID: 5616796738717931454}
   - component: {fileID: 5342607189384696156}
-  - component: {fileID: 5451435798295476039}
-  - component: {fileID: 6455848462688100322}
-  m_Layer: 0
+  - component: {fileID: 7197877847154125803}
+  - component: {fileID: 3395188922481704454}
+  m_Layer: 3
   m_Name: LaserBolt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -28,13 +28,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4257812618152626136}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &5616796738717931454
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -104,7 +104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lifetime: 2
   explosionEffect: {fileID: 0}
---- !u!54 &5451435798295476039
+--- !u!54 &7197877847154125803
 Rigidbody:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -126,12 +126,12 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &6455848462688100322
+--- !u!65 &3395188922481704454
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
