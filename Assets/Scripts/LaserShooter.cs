@@ -4,7 +4,6 @@ public class LaserShooter : MonoBehaviour
 {
     [Header("Lazer Ayarları")]
     [SerializeField] private GameObject laserPrefab;
-    [SerializeField] private Transform firePoint;
     [SerializeField] private float fireRate = 0.3f;
     [SerializeField] private float laserSpeed = 10f;
 
@@ -26,16 +25,16 @@ public class LaserShooter : MonoBehaviour
 
     private void FireLaser()
     {
-        // Geminin baktığı yön (transform.up → world space yönü)
-        Vector3 direction = firePoint.up;
-        Vector3 spawnPos = firePoint.position + direction * 0.5f;
+        Vector3 direction = transform.forward; //Geminin baktığı yön (aşağıya doğru)
+        Vector3 spawnPos = transform.position + direction * 0.5f;
         spawnPos.z = 0f;
 
-        // Prefab'ı direction yönüne döndürerek instantiate et
-        Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction); // 2D uyumlu
-        GameObject laser = Instantiate(laserPrefab, spawnPos, rotation);
+        // Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction); // 2D için
+        Quaternion rotation = Quaternion.Euler(90, 0, 0); // 2D için z ekseninde 90 derece rotasyon
 
-        // Rigidbody'ye doğru yönü ver
+        GameObject laser = Instantiate(laserPrefab, spawnPos, rotation);
+        Debug.Log($"[LASER] Lazer rotationi: {rotation}");
+
         Rigidbody rb = laser.GetComponent<Rigidbody>();
         if (rb != null)
         {
@@ -44,6 +43,7 @@ public class LaserShooter : MonoBehaviour
 
         Debug.Log($"[LASER] Lazer ateşlendi, pozisyon: {spawnPos}, yön: {direction}");
     }
+
 
 
 
