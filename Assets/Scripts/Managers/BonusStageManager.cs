@@ -5,7 +5,7 @@ public class BonusStageManager : MonoBehaviour
     public static BonusStageManager Instance;
 
     [Header("Bonus Ayarları")]
-    public float bonusDuration = 15f;
+    public float bonusDuration = 7f;
 
     private bool isBonusActive = false;
     private float bonusTimer = 0f;
@@ -41,34 +41,33 @@ public class BonusStageManager : MonoBehaviour
         if (isBonusActive) return;
 
         isBonusActive = true;
-        bonusTimer = bonusDuration;
+        bonusTimer = bonusDuration; // 15 saniyelik süre
+
+        //  Zorluk ayarlarını durdur
+        if (DifficultyManager.Instance != null)
+            DifficultyManager.Instance.enabled = false;
 
         StageTransitionManager.Instance.PlayBonusTransition(() =>
         {
             Debug.Log("[BONUS STAGE] Başladı!");
-
-            // Lazer ateşlemeyi başlat
-            if (playerLaser == null)
-                playerLaser = FindFirstObjectByType<LaserShooter>();
-
+            // Lazer atışı vs. zaten burada açılıyor
+            playerLaser = playerLaser ?? FindFirstObjectByType<LaserShooter>();
             playerLaser?.EnableShooting();
-
-            // Buraya sonraki aşamalarda ekleyeceğiz:
-            // - Lazer aç
-            // - Asteroid zayıflat
-            // - Özel müzik veya efekt
-
         });
     }
-
-
     public void EndBonusStage()
     {
         Debug.Log("[BONUS STAGE] Bitti!");
 
         isBonusActive = false;
 
-        // Burada tüm geçici modlar eski haline dönecek (Aşama 3-4-5)
+        if (DifficultyManager.Instance != null)
+            DifficultyManager.Instance.enabled = true;
+
+        if (playerLaser == null)
+            playerLaser = FindFirstObjectByType<LaserShooter>();
+
+        playerLaser?.DisableShooting();
     }
 
     public bool IsBonusActive()

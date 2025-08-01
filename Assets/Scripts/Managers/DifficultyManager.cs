@@ -51,28 +51,25 @@ public class DifficultyManager : MonoBehaviour
 
     private void AdjustDifficulty()
     {
+        //Bonus aktifse hiç güncelleme yapma
+        if (BonusStageManager.Instance != null && BonusStageManager.Instance.IsBonusActive())
+            return;
+
         float score = performanceTracker.asteroidsAvoided - performanceTracker.timesHit;
-
         int newLevel = Mathf.Clamp(1 + Mathf.FloorToInt(score / 5f), 1, 10);
-
         int newStage = Mathf.FloorToInt((float)newLevel / 3f) + 1;
-
-        // Debug.Log($"New Level: {newLevel}, New Stage: {newStage}, Last Stage Shown: {lastStageShown}");
 
         if (newStage > lastStageShown)
         {
             lastStageShown = newStage;
-
             StageTransitionManager.Instance?.PlayStageTransition(
                 newStage - 1,
                 () =>
                 {
                     difficultyLevel = newLevel;
                     ApplyDifficultyFeedback();
-
-                    BonusStageManager.Instance?.StartBonusStage(); // ✅ Bonus Stage Başlasın!
+                    BonusStageManager.Instance?.StartBonusStage();
                 });
-
         }
         else if (newLevel > difficultyLevel)
         {

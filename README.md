@@ -13,6 +13,7 @@ Inspired by classic bullet-dodging games and polished with modern feedback syste
 - **Dynamic Asteroid Spawning**: Random directions and physics-based force control.
 - **Zig-Zag & Homing Asteroids**: Intelligent enemies that track or trick the player.
 - **Difficulty Manager**: Game gets harder as the player performs better — faster asteroids, tighter movement patterns.
+- **15s Bonus Stage**: Player gets a short laser-powered break while stage and difficulty progression pause.
 
 ### 🎯 Feedback & Feel
 - **Near Miss Detection System**:
