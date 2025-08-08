@@ -52,22 +52,38 @@ public class StageTransitionManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.5f);
         }
 
+        // Show bonus stage intro
         yield return StartCoroutine(BonusTransitionRoutine(null));
 
+        // Resume normal timescale during the bonus stage
         Time.timeScale = 1f;
 
-        bonusStageManager?.StartBonusStage();
-
+        // Start the bonus stage if a manager is assigned. The BonusStageManager
+        // internally handles laser activation and difficulty pausing.
         if (bonusStageManager != null)
-            while (bonusStageManager.IsBonusActive())
-                yield return null;
+        {
+            bonusStageManager.StartBonusStage();
+            // Instead of blindly polling the BonusStageManager's IsBonusActive
+            // property, wait for a fixed duration of 15 seconds in real time.
+            // This guarantees that every bonus stage lasts exactly 15 seconds
+            // regardless of internal state changes. After the wait, explicitly
+            // terminate the bonus stage if it is still active to ensure lasers
+            // are disabled and normal gameplay resumes.
+            yield return new WaitForSecondsRealtime(15f);
+            if (bonusStageManager.IsBonusActive())
+            {
+                bonusStageManager.EndBonusStage();
+            }
+        }
 
+        // Slow down time for the next stage intro
         Time.timeScale = 0.3f;
 
+        // Show the incoming stage message
         yield return StartCoroutine(ShowText($"STAGE {stage + 1} INCOMING!", stageIncomingClip));
 
+        // Restore normal timescale and notify completion
         Time.timeScale = 1f;
-
         onComplete?.Invoke();
     }
 
@@ -83,7 +99,6 @@ public class StageTransitionManager : MonoBehaviour
         yield return StartCoroutine(ShowText("BONUS STAGE", stageIncomingClip));
 
         Time.timeScale = 1f;
-
         onComplete?.Invoke();
     }
 

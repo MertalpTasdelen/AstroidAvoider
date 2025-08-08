@@ -69,7 +69,6 @@ public class DifficultyManager : MonoBehaviour
                 {
                     difficultyLevel = newLevel;
                     ApplyDifficultyFeedback();
-                    BonusStageManager.Instance?.StartBonusStage();
                 });
         }
         else if (newLevel > difficultyLevel)
