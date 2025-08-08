@@ -10,6 +10,20 @@ public class LaserShooter : MonoBehaviour
     private float fireCooldown;
     private bool isShooting = false;
 
+    // Oyuncu gemisinin rigidbodysini saklarız ki hızını lazerlere ekleyebilelim.
+    private Rigidbody playerRb;
+
+    private void Start()
+    {
+        // Sahnedeki PlayerMovements bileşenini bul ve rigidbodysini al. Eğer bulunamazsa
+        // playerRb null kalır ve lazerler yalnızca kendi hızlarıyla ateşlenir.
+        var player = FindFirstObjectByType<PlayerMovements>();
+        if (player != null)
+        {
+            playerRb = player.GetComponent<Rigidbody>();
+        }
+    }
+
     void Update()
     {
         if (!isShooting) return;
@@ -25,35 +39,40 @@ public class LaserShooter : MonoBehaviour
 
     private void FireLaser()
     {
-        Vector3 direction = transform.forward; //Geminin baktığı yön (aşağıya doğru)
+        // Geminin baktığı yön (aşağıya doğru). Lazerlerin yönünü bu vektör belirler.
+        Vector3 direction = transform.forward;
         Vector3 spawnPos = transform.position + direction * 0.5f;
         spawnPos.z = 0f;
 
-        // Quaternion rotation = Quaternion.LookRotation(Vector3.forward, direction); // 2D için
-        Quaternion rotation = Quaternion.Euler(90, 0, 0); // 2D için z ekseninde 90 derece rotasyon
+        // 2D için z ekseninde 90 derece rotasyon
+        Quaternion rotation = Quaternion.Euler(90, 0, 0);
 
         GameObject laser = Instantiate(laserPrefab, spawnPos, rotation);
         Debug.Log($"[LASER] Lazer rotationi: {rotation}");
 
+        // Lazerin rigidbodysini al ve hızını ayarla. Mevcut gemi hızını ekle.
         Rigidbody rb = laser.GetComponent<Rigidbody>();
         if (rb != null)
         {
-            rb.linearVelocity = direction * laserSpeed;
+            Vector3 shipVelocity = playerRb != null ? playerRb.linearVelocity : Vector3.zero;
+            rb.linearVelocity = shipVelocity + direction * laserSpeed;
         }
 
         Debug.Log($"[LASER] Lazer ateşlendi, pozisyon: {spawnPos}, yön: {direction}");
     }
 
-
-
-
-
+    /// <summary>
+    /// Lazer ateşleme işlemini başlatır. İlk atışı gecikmesiz yapması için fireCooldown sıfırlanır.
+    /// </summary>
     public void EnableShooting()
     {
         isShooting = true;
-        fireCooldown = 0f; // ilk atışı gecikmesiz yapsın
+        fireCooldown = 0f;
     }
 
+    /// <summary>
+    /// Lazer ateşleme işlemini durdurur.
+    /// </summary>
     public void DisableShooting()
     {
         isShooting = false;

@@ -1774,7 +1774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d218eec7772bb94b933cfd80b1868bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  bonusDuration: 15
+  bonusStageDuration: 15
 --- !u!4 &634800270
 Transform:
   m_ObjectHideFlags: 0
@@ -1967,7 +1967,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   laserPrefab: {fileID: 4068850958318207260, guid: ff962d75877ed4645a10e82de5f839da, type: 3}
-  fireRate: 0.3
+  fireRate: 0.2
   laserSpeed: 10
 --- !u!1 &834196689
 GameObject:
@@ -4859,6 +4859,7 @@ MonoBehaviour:
   stageIncomingClip: {fileID: 8300000, guid: 04212d7f65bf444a2875f8ef7ed14ddd, type: 3}
   fadeDuration: 0.6
   messageDisplayTime: 1.5
+  transitionDelay: 2
 --- !u!4 &1903850881
 Transform:
   m_ObjectHideFlags: 0
