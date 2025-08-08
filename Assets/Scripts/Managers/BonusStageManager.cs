@@ -12,6 +12,16 @@ public class BonusStageManager : MonoBehaviour
     // Bonus aşamasında oyuncu gemisinin önündeki lazeri kontrol edecek script
     private LaserShooter playerLaser;
 
+    [SerializeField] private float bonusStageDuration = 15f; // Bonus stage süresi
+    private float remainingTime;
+    private bool isBonusStageActive = false;
+    private DifficultyManager difficultyManager; // DifficultyManager referansı
+
+    private void Start()
+    {
+        difficultyManager = FindObjectOfType<DifficultyManager>();
+    }
+
     private void Awake()
     {
         if (Instance == null)
@@ -26,35 +36,30 @@ public class BonusStageManager : MonoBehaviour
 
     private void Update()
     {
-        if (!isBonusActive) return;
-
-        bonusTimer -= Time.deltaTime;
-
-        if (bonusTimer <= 0f)
+        if (isBonusStageActive)
         {
-            EndBonusStage();
+            remainingTime -= Time.deltaTime;
+
+            if (remainingTime <= 0)
+            {
+                EndBonusStage();
+            }
         }
     }
 
+
     public void StartBonusStage()
     {
-        if (isBonusActive) return;
-
-        isBonusActive = true;
-        bonusTimer = bonusDuration; // 15 saniyelik süre
-
-        //  Zorluk ayarlarını durdur
-        if (DifficultyManager.Instance != null)
-            DifficultyManager.Instance.enabled = false;
-
-        StageTransitionManager.Instance.PlayBonusTransition(() =>
+        isBonusStageActive = true;
+        remainingTime = bonusStageDuration;
+        
+        // Difficulty yönetimini duraklat
+        if (difficultyManager != null)
         {
-            Debug.Log("[BONUS STAGE] Başladı!");
-            // Lazer atışı vs. zaten burada açılıyor
-            playerLaser = playerLaser ?? FindFirstObjectByType<LaserShooter>();
-            playerLaser?.EnableShooting();
-        });
+            difficultyManager.PauseDifficultyProgression();
+        }
     }
+
     public void EndBonusStage()
     {
         Debug.Log("[BONUS STAGE] Bitti!");

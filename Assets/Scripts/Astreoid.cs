@@ -28,6 +28,11 @@ public class Astreoid : MonoBehaviour
     private bool inNearZone = false;
     private float nearZoneEnterTime = 0f;
     private float nearMissDurationThreshold = 0.3f;
+    
+    // Asteroid kaçınma algılama değişkenleri
+    private bool avoidanceRegistered = false;
+    private bool hasPassedPlayer = false;
+    private Vector3 initialPlayerPosition;
 
     void Start()
     {
@@ -40,6 +45,12 @@ public class Astreoid : MonoBehaviour
         }
 
         player = GameObject.FindWithTag("Player")?.transform;
+        
+        // Başlangıç oyuncu pozisyonunu kaydet
+        if (player != null)
+        {
+            initialPlayerPosition = player.position;
+        }
 
         if (useHoming && player != null)
         {
@@ -73,6 +84,7 @@ public class Astreoid : MonoBehaviour
         // }
 
         CheckNearMiss();
+        CheckAsteroidAvoidance();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -80,6 +92,9 @@ public class Astreoid : MonoBehaviour
         PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
         if (playerHealth != null)
         {
+            // Çarpışma oldu, kaçınma kaydını engelle
+            avoidanceRegistered = true;
+            
             PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
             if (tracker != null)
             {
@@ -110,10 +125,10 @@ public class Astreoid : MonoBehaviour
             return;
         }
 
-        PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
-        if (tracker != null)
+        // Eğer asteroid kaçınma olarak kaydedilmemişse, ekrandan çıktığında kaydet
+        if (!avoidanceRegistered)
         {
-            tracker.RegisterAsteroidAvoided();
+            RegisterAvoidance();
         }
 
         AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
@@ -177,6 +192,50 @@ public class Astreoid : MonoBehaviour
             }
 
             inNearZone = false;
+        }
+    }
+
+    void CheckAsteroidAvoidance()
+    {
+        if (player == null || avoidanceRegistered)
+            return;
+
+        // Asteroid oyuncudan geçti mi kontrol et
+        Vector3 currentPos = transform.position;
+        Vector3 playerPos = player.position;
+        
+        // Asteroid oyuncuyu geçerse kaçınma olarak say
+        float distanceFromStart = Vector3.Distance(currentPos, initialPlayerPosition);
+        float minDistance = Vector3.Distance(transform.position, playerPos);
+        
+        // Eğer asteroid oyuncudan 3 unit uzaklaştıysa ve çarpışma olmadıysa
+        if (distanceFromStart > 3f && minDistance > 2f && !hasPassedPlayer)
+        {
+            hasPassedPlayer = true;
+            RegisterAvoidance();
+        }
+        
+        // Alternatif: Asteroid'in hareket yönü oyuncudan uzaklaşıyorsa
+        Vector3 toPlayer = (playerPos - currentPos).normalized;
+        Vector3 velocity = rb.linearVelocity.normalized;
+        float dot = Vector3.Dot(velocity, toPlayer);
+        
+        // Eğer asteroid oyuncudan uzaklaşıyor ve minimum mesafeden geçtiyse
+        if (dot < -0.5f && minDistance > 1.5f && Time.time - spawnTime > 1f)
+        {
+            RegisterAvoidance();
+        }
+    }
+
+    void RegisterAvoidance()
+    {
+        if (avoidanceRegistered) return;
+        
+        avoidanceRegistered = true;
+        PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
+        if (tracker != null)
+        {
+            tracker.RegisterAsteroidAvoided();
         }
     }
 

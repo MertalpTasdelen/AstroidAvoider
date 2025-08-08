@@ -55,10 +55,11 @@ public class DifficultyManager : MonoBehaviour
         if (BonusStageManager.Instance != null && BonusStageManager.Instance.IsBonusActive())
             return;
 
-        float score = performanceTracker.asteroidsAvoided - performanceTracker.timesHit;
-        int newLevel = Mathf.Clamp(1 + Mathf.FloorToInt(score / 5f), 1, 10);
+        // Score'a dayalı difficulty hesaplama - her 100 puan için 1 seviye artış
+        float currentScore = ScoreSystem.Instance != null ? ScoreSystem.Instance.GetScore() : 0f;
+        int newLevel = Mathf.Clamp(1 + Mathf.FloorToInt(currentScore / 100f), 1, 10);
         int newStage = Mathf.FloorToInt((float)newLevel / 3f) + 1;
-
+        
         if (newStage > lastStageShown)
         {
             lastStageShown = newStage;

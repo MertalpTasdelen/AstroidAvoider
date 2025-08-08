@@ -16,6 +16,16 @@ public class StageTransitionManager : MonoBehaviour
 
     private CanvasGroup canvasGroup;
 
+    [SerializeField] private float transitionDelay = 2f;
+    private BonusStageManager bonusStageManager;
+    private DifficultyManager difficultyManager;
+
+    private void Start()
+    {
+        bonusStageManager = FindObjectOfType<BonusStageManager>();
+        difficultyManager = FindObjectOfType<DifficultyManager>();
+    }
+
     private void Awake()
     {
         Instance = this;
