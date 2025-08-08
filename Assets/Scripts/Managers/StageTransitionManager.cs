@@ -18,12 +18,12 @@ public class StageTransitionManager : MonoBehaviour
 
     [SerializeField] private float transitionDelay = 2f;
     private BonusStageManager bonusStageManager;
-    private DifficultyManager difficultyManager;
+    // private DifficultyManager difficultyManager;
 
     private void Start()
     {
-        bonusStageManager = FindObjectOfType<BonusStageManager>();
-        difficultyManager = FindObjectOfType<DifficultyManager>();
+        bonusStageManager = FindFirstObjectByType<BonusStageManager>();
+        // difficultyManager = FindObjectOfType<DifficultyManager>();
     }
 
     private void Awake()
@@ -46,12 +46,23 @@ public class StageTransitionManager : MonoBehaviour
     {
         Time.timeScale = 0.3f;
 
-        // İlk geçişse sadece INCOMING göster
         if (stage > 0)
         {
             yield return StartCoroutine(ShowText($"STAGE {stage} COMPLETED!", stageCompleteClip));
             yield return new WaitForSecondsRealtime(0.5f);
         }
+
+        yield return StartCoroutine(BonusTransitionRoutine(null));
+
+        Time.timeScale = 1f;
+
+        bonusStageManager?.StartBonusStage();
+
+        if (bonusStageManager != null)
+            while (bonusStageManager.IsBonusActive())
+                yield return null;
+
+        Time.timeScale = 0.3f;
 
         yield return StartCoroutine(ShowText($"STAGE {stage + 1} INCOMING!", stageIncomingClip));
 
