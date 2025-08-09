@@ -6,9 +6,9 @@ public class PlayerHealth : MonoBehaviour
 
     public void Crash()
     {
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
 
-        gameOverHandler.EndGame();
-
+        // gameOverHandler.EndGame();
+        Debug.Log("Player has crashed!");
     }
 }

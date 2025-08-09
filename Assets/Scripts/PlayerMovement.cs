@@ -21,8 +21,19 @@ public class PlayerMovements : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         mainCamera = Camera.main;
 
-        // rb.linearDamping = 1.5f; // Çok hafif fren etkisi
+        rb.useGravity = false;
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
+
+        // 2D kilitler
+        rb.constraints = RigidbodyConstraints.FreezePositionZ
+                       | RigidbodyConstraints.FreezeRotationX
+                       | RigidbodyConstraints.FreezeRotationY;
+
+        // emin olmak için z'yi 0'a çak
+        var p = transform.position; p.z = 0f; transform.position = p;
     }
+
 
     void Update()
     {
@@ -116,4 +127,15 @@ public class PlayerMovements : MonoBehaviour
         transform.rotation = Quaternion.Lerp(
             transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
     }
+
+    private void OnCollisionEnter(Collision c)
+    {
+        if (c.collider.CompareTag("Asteroid"))
+        {
+            rb.angularVelocity = Vector3.zero;
+            var e = transform.eulerAngles;
+            transform.rotation = Quaternion.Euler(0, 0, e.z);
+        }
+    }
+
 }
