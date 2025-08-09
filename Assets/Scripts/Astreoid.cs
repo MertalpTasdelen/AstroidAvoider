@@ -34,18 +34,14 @@ public class Astreoid : MonoBehaviour
     private bool hasPassedPlayer = false;
     private Vector3 initialPlayerPosition;
 
-//Its make them mutiple times collide but velocity is the problem
-    // private void Awake()
-    // {
-    //     rb = GetComponent<Rigidbody>();
-    //     rb.useGravity = false;
-    //     rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
-    //     rb.interpolation = RigidbodyInterpolation.Interpolate;
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
 
-    //     rb.constraints = RigidbodyConstraints.FreezePositionZ 
-    //                    | RigidbodyConstraints.FreezeRotationX 
-    //                    | RigidbodyConstraints.FreezeRotationY;
-    // }
+        rb.constraints = RigidbodyConstraints.FreezePositionZ
+                       | RigidbodyConstraints.FreezeRotationX
+                       | RigidbodyConstraints.FreezeRotationY;
+    }
 
     void Start()
     {
@@ -149,7 +145,7 @@ public class Astreoid : MonoBehaviour
         rb.linearVelocity = newV1;
         otherRb.linearVelocity = newV2;
     }
-    
+
     private void OnBecameInvisible()
     {
 

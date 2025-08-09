@@ -47,6 +47,9 @@ public class LeaderboardApiClient : MonoBehaviour
     public IEnumerator SubmitScore(string playerName, int score)
     {
         int lastSentScore = PlayerPrefs.GetInt("LastSubmittedScore", 0);
+        
+        Debug.Log("[LeaderboardApiClient] Last submitted score: " + lastSentScore);
+
 
         if (score <= lastSentScore)
         {
@@ -73,7 +76,7 @@ public class LeaderboardApiClient : MonoBehaviour
             else
             {
                 Debug.Log("[LeaderboardApiClient] Score submitted successfully!");
-                PlayerPrefs.SetInt("LastSubmittedScore", score); // 🔐 Güncelliyoruz
+                PlayerPrefs.SetInt("LastSubmittedScore", score);
                 PlayerPrefs.Save();
             }
         }
