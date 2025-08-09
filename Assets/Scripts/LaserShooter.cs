@@ -39,13 +39,26 @@ public class LaserShooter : MonoBehaviour
 
     private void FireLaser()
     {
-        // Geminin baktığı yön (aşağıya doğru). Lazerlerin yönünü bu vektör belirler.
-        Vector3 direction = transform.forward;
+        // Lazerin hareket yönünü belirle. Oyuncu gemisinin momentumu varsa onu kullan,
+        Vector3 direction;
+        if (playerRb != null && playerRb.linearVelocity.sqrMagnitude > 0.001f)
+        {
+            direction = playerRb.linearVelocity.normalized;
+        }
+        else
+        {
+            direction = transform.forward;
+        }
+
+        // Lazerin çıkış pozisyonu, gemi burnundan hafifçe ileriye kaydırılır.
         Vector3 spawnPos = transform.position + direction * 0.5f;
         spawnPos.z = 0f;
 
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+
         // 2D için z ekseninde 90 derece rotasyon
-        Quaternion rotation = Quaternion.Euler(90, 0, 0);
+        Quaternion rotation = Quaternion.Euler(0f, 0f, angle);
+
 
         GameObject laser = Instantiate(laserPrefab, spawnPos, rotation);
         Debug.Log($"[LASER] Lazer rotationi: {rotation}");
@@ -61,18 +74,12 @@ public class LaserShooter : MonoBehaviour
         Debug.Log($"[LASER] Lazer ateşlendi, pozisyon: {spawnPos}, yön: {direction}");
     }
 
-    /// <summary>
-    /// Lazer ateşleme işlemini başlatır. İlk atışı gecikmesiz yapması için fireCooldown sıfırlanır.
-    /// </summary>
     public void EnableShooting()
     {
         isShooting = true;
         fireCooldown = 0f;
     }
 
-    /// <summary>
-    /// Lazer ateşleme işlemini durdurur.
-    /// </summary>
     public void DisableShooting()
     {
         isShooting = false;
