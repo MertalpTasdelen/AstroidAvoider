@@ -61,7 +61,6 @@ public class LaserShooter : MonoBehaviour
 
 
         GameObject laser = Instantiate(laserPrefab, spawnPos, rotation);
-        Debug.Log($"[LASER] Lazer rotationi: {rotation}");
 
         // Lazerin rigidbodysini al ve hızını ayarla. Mevcut gemi hızını ekle.
         Rigidbody rb = laser.GetComponent<Rigidbody>();
@@ -71,7 +70,6 @@ public class LaserShooter : MonoBehaviour
             rb.linearVelocity = shipVelocity + direction * laserSpeed;
         }
 
-        Debug.Log($"[LASER] Lazer ateşlendi, pozisyon: {spawnPos}, yön: {direction}");
     }
 
     public void EnableShooting()
