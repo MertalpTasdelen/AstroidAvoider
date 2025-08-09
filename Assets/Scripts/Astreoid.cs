@@ -28,7 +28,7 @@ public class Astreoid : MonoBehaviour
     private bool inNearZone = false;
     private float nearZoneEnterTime = 0f;
     private float nearMissDurationThreshold = 0.3f;
-    
+
     // Asteroid kaçınma algılama değişkenleri
     private bool avoidanceRegistered = false;
     private bool hasPassedPlayer = false;
@@ -45,7 +45,7 @@ public class Astreoid : MonoBehaviour
         }
 
         player = GameObject.FindWithTag("Player")?.transform;
-        
+
         // Başlangıç oyuncu pozisyonunu kaydet
         if (player != null)
         {
@@ -75,14 +75,6 @@ public class Astreoid : MonoBehaviour
             Vector3 perp = Vector3.Cross(direction, Vector3.forward);
             transform.position += perp * wave * Time.deltaTime;
         }
-        //With this astreoid, the homing is not working as expected. It is not following the player correctly.
-        // if (useHoming && player != null)
-        // {
-        //     Vector3 toPlayer = (player.position - transform.position).normalized;
-        //     Vector3 newVelocity = Vector3.Lerp(rb.linearVelocity.normalized, toPlayer, homingStrength * Time.deltaTime);
-        //     rb.linearVelocity = newVelocity * rb.linearVelocity.magnitude;
-        // }
-
         CheckNearMiss();
         CheckAsteroidAvoidance();
     }
@@ -94,7 +86,7 @@ public class Astreoid : MonoBehaviour
         {
             // Çarpışma oldu, kaçınma kaydını engelle
             avoidanceRegistered = true;
-            
+
             PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
             if (tracker != null)
             {
@@ -114,6 +106,37 @@ public class Astreoid : MonoBehaviour
         }
     }
 
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        // Sadece diğer asteroidlerle ilgilen
+        if (!collision.gameObject.CompareTag("Asteroid")) return;
+
+        Rigidbody otherRb = collision.gameObject.GetComponent<Rigidbody>();
+        if (otherRb == null || rb == null) return;
+
+        // İki asteroidin konumu ve aralarındaki vektör
+        Vector3 thisPos = transform.position;
+        Vector3 otherPos = otherRb.transform.position;
+        Vector3 collisionVector = thisPos - otherPos;
+        float distanceSq = collisionVector.sqrMagnitude;
+        if (distanceSq < 0.0001f) return;
+
+        // Çarpışma öncesi hızlar
+        Vector3 v1 = rb.linearVelocity;
+        Vector3 v2 = otherRb.linearVelocity;
+
+        // Eşit kütleler için elastik çarpışma formülü
+        float dot1 = Vector3.Dot(v1 - v2, collisionVector);
+        Vector3 newV1 = v1 - (dot1 / distanceSq) * collisionVector;
+        float dot2 = Vector3.Dot(v2 - v1, -collisionVector);
+        Vector3 newV2 = v2 - (dot2 / distanceSq) * (-collisionVector);
+
+        // Yeni hızları ata
+        rb.linearVelocity = newV1;
+        otherRb.linearVelocity = newV2;
+    }
+    
     private void OnBecameInvisible()
     {
 
@@ -203,23 +226,23 @@ public class Astreoid : MonoBehaviour
         // Asteroid oyuncudan geçti mi kontrol et
         Vector3 currentPos = transform.position;
         Vector3 playerPos = player.position;
-        
+
         // Asteroid oyuncuyu geçerse kaçınma olarak say
         float distanceFromStart = Vector3.Distance(currentPos, initialPlayerPosition);
         float minDistance = Vector3.Distance(transform.position, playerPos);
-        
+
         // Eğer asteroid oyuncudan 3 unit uzaklaştıysa ve çarpışma olmadıysa
         if (distanceFromStart > 3f && minDistance > 2f && !hasPassedPlayer)
         {
             hasPassedPlayer = true;
             RegisterAvoidance();
         }
-        
+
         // Alternatif: Asteroid'in hareket yönü oyuncudan uzaklaşıyorsa
         Vector3 toPlayer = (playerPos - currentPos).normalized;
         Vector3 velocity = rb.linearVelocity.normalized;
         float dot = Vector3.Dot(velocity, toPlayer);
-        
+
         // Eğer asteroid oyuncudan uzaklaşıyor ve minimum mesafeden geçtiyse
         if (dot < -0.5f && minDistance > 1.5f && Time.time - spawnTime > 1f)
         {
@@ -230,7 +253,7 @@ public class Astreoid : MonoBehaviour
     void RegisterAvoidance()
     {
         if (avoidanceRegistered) return;
-        
+
         avoidanceRegistered = true;
         PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
         if (tracker != null)
