@@ -135,7 +135,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lifetime: 3
-  explosionEffect: {fileID: 0}
+  explosionEffect: {fileID: 8304213614855716382, guid: 91a64ad1763c25547ab23a237367087f, type: 3}
 --- !u!54 &8641958834120516998
 Rigidbody:
   m_ObjectHideFlags: 0

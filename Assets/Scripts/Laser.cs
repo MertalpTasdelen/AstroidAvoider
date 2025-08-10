@@ -14,16 +14,20 @@ public class Laser : MonoBehaviour
     {
         if (other.CompareTag("Asteroid"))
         {
-            // Patlama efekti oluştur
-            if (explosionEffect != null)
+            // Bonus sahnesi kontrolü opsiyonel; kaldırırsanız her sahnede patlama olur
+            bool bonusAktif = BonusStageManager.Instance != null &&
+                              BonusStageManager.Instance.IsBonusActive();
+
+            if (explosionEffect != null && bonusAktif)
             {
-                Instantiate(explosionEffect, transform.position, Quaternion.identity);
+                Vector3 pos = transform.position;
+                pos.z = 0f;
+                Instantiate(explosionEffect, pos, Quaternion.identity);
             }
 
-            Destroy(other.gameObject); // asteroid yok et
-            Destroy(gameObject);       // lazeri yok et
-
-            ScoreSystem.Instance?.AddScore(15); // bonus puan
+            Destroy(other.gameObject);
+            Destroy(gameObject);
+            ScoreSystem.Instance?.AddScore(15);
         }
     }
 }
