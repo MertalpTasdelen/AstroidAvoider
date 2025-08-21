@@ -91,6 +91,10 @@ public class Astreoid : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
+        if (playerHealth == null)
+        {
+            playerHealth = other.GetComponentInParent<PlayerHealth>();
+        }
         if (playerHealth != null)
         {
             // Çarpışma oldu, kaçınma kaydını engelle

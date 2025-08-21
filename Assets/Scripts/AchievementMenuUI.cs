@@ -2,8 +2,14 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using System.Collections;
 using System.Collections.Generic;
 
+/// <summary>
+/// - Artık TitleText'te "achievement_id" yerine veritabanından gelen **title** gösterilir.
+/// - DescriptionText'te daha anlaşılır bir metin ve ilerleme (current / target) gösterilir.
+/// - Backend değişikliği yok; global tanımlar client'ta cache'lenir.
+/// </summary>
 public class AchievementMenuUI : MonoBehaviour
 {
     [Header("References")]
@@ -17,7 +23,6 @@ public class AchievementMenuUI : MonoBehaviour
     private void Awake()
     {
         FindStaticReferences();
-        // BindCloseButton();
     }
 
     private void OnEnable()
@@ -35,21 +40,18 @@ public class AchievementMenuUI : MonoBehaviour
         RefreshReferences();
 
         if (panelRoot != null)
-        {
             panelRoot.SetActive(false);
-        }
 
         BindCloseButton();
 
-        string playerName = PlayerPrefs.GetString("PlayerName", "Player");
-        StartCoroutine(AchievementApiClient.Instance.FetchPlayerAchievements(playerName, PopulateAchievements));
-
+        // İsteğe bağlı: oyun açılır açılmaz arkaplanda definisyonları cache'le
+        StartCoroutine(AchievementApiClient.Instance.EnsureDefinitionsLoaded());
     }
 
     private void HandleSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         RefreshReferences();
-        BindCloseButton();  // Also re-bind button in case scene reloads
+        BindCloseButton();
     }
 
     private void FindStaticReferences()
@@ -62,24 +64,18 @@ public class AchievementMenuUI : MonoBehaviour
             {
                 panelRoot = canvas.gameObject;
 
-                Transform contentTransform = null;
+                // İçerik konteynerini bul
                 foreach (var t in panelRoot.GetComponentsInChildren<Transform>(true))
                 {
                     if (t.name == "Content")
                     {
-                        contentTransform = t;
+                        contentContainer = t;
                         break;
                     }
                 }
 
-                if (contentTransform != null)
-                {
-                    contentContainer = contentTransform;
-                }
-                else
-                {
+                if (contentContainer == null)
                     Debug.LogError("[AchievementMenuUI] Content not found under Canvas.");
-                }
             }
         }
 
@@ -88,8 +84,7 @@ public class AchievementMenuUI : MonoBehaviour
 
     private void BindCloseButton()
     {
-        if (panelRoot == null)
-            return;
+        if (panelRoot == null) return;
 
         closeButton = panelRoot.GetComponentInChildren<Button>(true);
         if (closeButton != null)
@@ -105,8 +100,6 @@ public class AchievementMenuUI : MonoBehaviour
 
     public void RefreshReferences()
     {
-        // Allow RefreshReferences to safely recover if objects get destroyed & reloaded
-
         if (panelRoot == null || panelRoot.Equals(null))
             FindStaticReferences();
 
@@ -122,21 +115,40 @@ public class AchievementMenuUI : MonoBehaviour
             return;
         }
 
-        if (panelRoot.activeSelf)
+        bool opening = !panelRoot.activeSelf;
+
+        if (opening)
         {
-            panelRoot.SetActive(false);
-            if (mainMenuRoot != null)
-                mainMenuRoot.SetActive(true);
-            ClearAchievements();
+            panelRoot.SetActive(true);
+            if (mainMenuRoot != null) mainMenuRoot.SetActive(false);
+            StartCoroutine(LoadAndPopulate());
         }
         else
         {
-            panelRoot.SetActive(true);
-            if (mainMenuRoot != null)
-                mainMenuRoot.SetActive(false);
-            string playerName = PlayerPrefs.GetString("PlayerName", "Player");
-            StartCoroutine(AchievementApiClient.Instance.FetchPlayerAchievements(playerName, PopulateAchievements));
+            panelRoot.SetActive(false);
+            if (mainMenuRoot != null) mainMenuRoot.SetActive(true);
+            ClearAchievements();
         }
+    }
+
+    private IEnumerator LoadAndPopulate()
+    {
+        // 1) Global definisyonlar hazır mı?
+        yield return AchievementApiClient.Instance.EnsureDefinitionsLoaded();
+
+        // 2) Oyuncu başarımları
+        string playerName = PlayerPrefs.GetString("PlayerName", "Player");
+        bool done = false;
+        List<AchievementApiClient.PlayerAchievement> items = null;
+
+        yield return StartCoroutine(AchievementApiClient.Instance.FetchPlayerAchievements(
+            playerName,
+            result => { items = result; done = true; }
+        ));
+
+        while (!done) yield return null;
+
+        PopulateAchievements(items ?? new List<AchievementApiClient.PlayerAchievement>());
     }
 
     private void PopulateAchievements(List<AchievementApiClient.PlayerAchievement> playerAchievements)
@@ -147,23 +159,46 @@ public class AchievementMenuUI : MonoBehaviour
         {
             GameObject item = Instantiate(achievementItemPrefab, contentContainer);
 
-            var titleText = item.transform.Find("TitleText").GetComponent<TextMeshProUGUI>();
-            var descriptionText = item.transform.Find("DescriptionText").GetComponent<TextMeshProUGUI>();
-            var starIcon = item.transform.Find("Icon").GetComponent<Image>();
-            var canvasGroup = item.GetComponent<CanvasGroup>();
+            var titleText = item.transform.Find("TitleText")?.GetComponent<TextMeshProUGUI>();
+            var descriptionText = item.transform.Find("DescriptionText")?.GetComponent<TextMeshProUGUI>();
+            var starIcon = item.transform.Find("Icon")?.GetComponent<Image>();
+            var canvasGroup = item.GetComponent<CanvasGroup>() ?? item.AddComponent<CanvasGroup>();
 
-            titleText.text = data.achievement_id; // istersen backend'den title da getir
-            descriptionText.text = $"Progress: {data.current_amount}";
+            // ---- Başlık: id yerine veritabanından fetched title ----
+            string title = AchievementApiClient.Instance.GetTitleFor(data.achievement_id);
+            if (titleText != null) titleText.text = title;
 
-            if (data.is_completed)
+            // ---- Açıklama + Progress ----
+            // Daha anlaşılır/natural bir ifade verelim.
+            int current = data.current_amount;
+            int? target = AchievementApiClient.Instance.GetTargetFor(data.achievement_id);
+            string friendlyProgress = target.HasValue ? $"{current}/{target.Value}" : current.ToString();
+
+            // (İsteğe bağlı) açıklama metnini da alabiliriz:
+            string desc = AchievementApiClient.Instance.GetDescriptionFor(data.achievement_id);
+            if (string.IsNullOrWhiteSpace(desc))
             {
-                canvasGroup.alpha = 1f;
-                starIcon.color = Color.yellow;
+                // Description yoksa sade ve anlaşılır bir fallback:
+                desc = $"İlerleme: {friendlyProgress}";
             }
             else
             {
-                canvasGroup.alpha = 0.4f;
-                starIcon.color = Color.white;
+                // Varsa, sonuna ilerleme bilgisini ekleyip kullanıcıya netlik verelim.
+                desc = $"{desc}\nİlerleme: {friendlyProgress}";
+            }
+
+            if (descriptionText != null) descriptionText.text = desc;
+
+            // ---- Tamamlanma durumu görselleştirme ----
+            if (data.is_completed)
+            {
+                canvasGroup.alpha = 1f;
+                if (starIcon) starIcon.color = Color.yellow;
+            }
+            else
+            {
+                canvasGroup.alpha = 0.5f;
+                if (starIcon) starIcon.color = Color.white;
             }
         }
     }
@@ -171,10 +206,7 @@ public class AchievementMenuUI : MonoBehaviour
     private void ClearAchievements()
     {
         if (contentContainer == null) return;
-
-        foreach (Transform child in contentContainer)
-        {
-            Destroy(child.gameObject);
-        }
+        for (int i = contentContainer.childCount - 1; i >= 0; i--)
+            Destroy(contentContainer.GetChild(i).gameObject);
     }
 }
