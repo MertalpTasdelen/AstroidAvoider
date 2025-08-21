@@ -29,7 +29,7 @@ public class Astreoid : MonoBehaviour
     private float nearZoneEnterTime = 0f;
     private float nearMissDurationThreshold = 0.3f;
 
-    // Asteroid kaçınma algılama değişkenleri
+    // kaçınma istatistiği
     private bool avoidanceRegistered = false;
     private bool hasPassedPlayer = false;
     private Vector3 initialPlayerPosition;
@@ -38,28 +38,31 @@ public class Astreoid : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
 
+        // 2D kilitler
         rb.constraints = RigidbodyConstraints.FreezePositionZ
                        | RigidbodyConstraints.FreezeRotationX
                        | RigidbodyConstraints.FreezeRotationY;
+
+        // Hızlı asteroidlerde çarpışma kaçırmayı azalt
+        rb.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+        rb.interpolation = RigidbodyInterpolation.Interpolate;
     }
 
     void Start()
     {
         spawnTime = Time.time;
-        rb = GetComponent<Rigidbody>();
 
         if (rb != null)
         {
-            direction = rb.linearVelocity.normalized;
+            direction = rb.linearVelocity.sqrMagnitude > 0.0001f
+                ? rb.linearVelocity.normalized
+                : transform.right; // emniyet
         }
 
         player = GameObject.FindWithTag("Player")?.transform;
 
-        // Başlangıç oyuncu pozisyonunu kaydet
         if (player != null)
-        {
             initialPlayerPosition = player.position;
-        }
 
         if (useHoming && player != null)
         {
@@ -84,75 +87,82 @@ public class Astreoid : MonoBehaviour
             Vector3 perp = Vector3.Cross(direction, Vector3.forward);
             transform.position += perp * wave * Time.deltaTime;
         }
+
         CheckNearMiss();
         CheckAsteroidAvoidance();
     }
 
+    // --- OYUNCU ÇARPIŞMASINI HEM TRIGGER HEM COLLISION'DA YAKALA ---
+
     private void OnTriggerEnter(Collider other)
     {
-        PlayerHealth playerHealth = other.GetComponent<PlayerHealth>();
-        if (playerHealth == null)
-        {
-            playerHealth = other.GetComponentInParent<PlayerHealth>();
-        }
+        var playerHealth = other.GetComponentInParent<PlayerHealth>();
         if (playerHealth != null)
         {
-            // Çarpışma oldu, kaçınma kaydını engelle
-            avoidanceRegistered = true;
-
-            PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
-            if (tracker != null)
-            {
-                tracker.RegisterHit();
-            }
-
-            if (canSplit && !hasSplit && Time.time - spawnTime > splitDelay)
-            {
-                hasSplit = true;
-                SpawnSplitAsteroids();
-                AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
-                return;
-            }
-
-            playerHealth.Crash();
-            AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
+            HandlePlayerHit(playerHealth);
+            return;
         }
     }
 
-
     private void OnCollisionEnter(Collision collision)
     {
-        // Sadece diğer asteroidlerle ilgilen
+        // Önce oyuncu mu diye bak
+        var playerHealth = collision.collider.GetComponentInParent<PlayerHealth>();
+        if (playerHealth != null)
+        {
+            HandlePlayerHit(playerHealth);
+            return;
+        }
+
+        // değilse asteroid-asteroid sekmesi uygula
         if (!collision.gameObject.CompareTag("Asteroid")) return;
 
-        Rigidbody otherRb = collision.gameObject.GetComponent<Rigidbody>();
+        Rigidbody otherRb = collision.rigidbody;
         if (otherRb == null || rb == null) return;
 
-        // İki asteroidin konumu ve aralarındaki vektör
         Vector3 thisPos = transform.position;
         Vector3 otherPos = otherRb.transform.position;
         Vector3 collisionVector = thisPos - otherPos;
         float distanceSq = collisionVector.sqrMagnitude;
         if (distanceSq < 0.0001f) return;
 
-        // Çarpışma öncesi hızlar
         Vector3 v1 = rb.linearVelocity;
         Vector3 v2 = otherRb.linearVelocity;
 
-        // Eşit kütleler için elastik çarpışma formülü
         float dot1 = Vector3.Dot(v1 - v2, collisionVector);
         Vector3 newV1 = v1 - (dot1 / distanceSq) * collisionVector;
         float dot2 = Vector3.Dot(v2 - v1, -collisionVector);
         Vector3 newV2 = v2 - (dot2 / distanceSq) * (-collisionVector);
 
-        // Yeni hızları ata
         rb.linearVelocity = newV1;
         otherRb.linearVelocity = newV2;
     }
 
+    private void HandlePlayerHit(PlayerHealth playerHealth)
+    {
+        // kaçınma sayımını iptal et
+        avoidanceRegistered = true;
+
+        var tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
+        if (tracker != null) tracker.RegisterHit();
+
+        // split süresi geldiyse önce böl
+        if (canSplit && !hasSplit && Time.time - spawnTime > splitDelay)
+        {
+            hasSplit = true;
+            SpawnSplitAsteroids();
+            AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
+        }
+        else
+        {
+            AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
+        }
+
+        playerHealth.Crash();
+    }
+
     private void OnBecameInvisible()
     {
-
         if (canSplit && !hasSplit && Time.time - spawnTime > splitDelay)
         {
             hasSplit = true;
@@ -161,11 +171,8 @@ public class Astreoid : MonoBehaviour
             return;
         }
 
-        // Eğer asteroid kaçınma olarak kaydedilmemişse, ekrandan çıktığında kaydet
         if (!avoidanceRegistered)
-        {
             RegisterAvoidance();
-        }
 
         AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
     }
@@ -180,10 +187,10 @@ public class Astreoid : MonoBehaviour
                 ? AstreoidPool.Instance.Get(splitAsteroidPrefab, transform.position, Quaternion.identity)
                 : Instantiate(splitAsteroidPrefab, transform.position, Quaternion.identity);
 
-            Rigidbody rb = newAsteroid.GetComponent<Rigidbody>();
+            Rigidbody rb2 = newAsteroid.GetComponent<Rigidbody>();
             Vector3 randomDirection = Random.insideUnitCircle.normalized;
             float splitForce = Random.Range(2f, 4f);
-            rb.linearVelocity = randomDirection * splitForce;
+            rb2.linearVelocity = randomDirection * splitForce;
 
             Astreoid splitScript = newAsteroid.GetComponent<Astreoid>();
             if (splitScript != null)
@@ -193,6 +200,14 @@ public class Astreoid : MonoBehaviour
                 splitScript.useHoming = false;
                 splitScript.useZigZag = false;
                 splitScript.prefabReference = splitAsteroidPrefab;
+
+                // güvenli çarpışma için bunları da ayarlıyoruz
+                var rbSplit = newAsteroid.GetComponent<Rigidbody>();
+                if (rbSplit != null)
+                {
+                    rbSplit.collisionDetectionMode = CollisionDetectionMode.ContinuousDynamic;
+                    rbSplit.interpolation = RigidbodyInterpolation.Interpolate;
+                }
             }
         }
     }
@@ -224,7 +239,6 @@ public class Astreoid : MonoBehaviour
                 nearMissTriggered = true;
                 ScoreSystem.Instance?.AddAvoidBonus(10);
                 NearMissFeedbackSystem.Instance?.TriggerNearMissFeedback();
-                // StartCoroutine(TemporarySlowMotion());
             }
 
             inNearZone = false;
@@ -233,30 +247,24 @@ public class Astreoid : MonoBehaviour
 
     void CheckAsteroidAvoidance()
     {
-        if (player == null || avoidanceRegistered)
-            return;
+        if (player == null || avoidanceRegistered) return;
 
-        // Asteroid oyuncudan geçti mi kontrol et
         Vector3 currentPos = transform.position;
         Vector3 playerPos = player.position;
 
-        // Asteroid oyuncuyu geçerse kaçınma olarak say
         float distanceFromStart = Vector3.Distance(currentPos, initialPlayerPosition);
         float minDistance = Vector3.Distance(transform.position, playerPos);
 
-        // Eğer asteroid oyuncudan 3 unit uzaklaştıysa ve çarpışma olmadıysa
         if (distanceFromStart > 3f && minDistance > 2f && !hasPassedPlayer)
         {
             hasPassedPlayer = true;
             RegisterAvoidance();
         }
 
-        // Alternatif: Asteroid'in hareket yönü oyuncudan uzaklaşıyorsa
         Vector3 toPlayer = (playerPos - currentPos).normalized;
         Vector3 velocity = rb.linearVelocity.normalized;
         float dot = Vector3.Dot(velocity, toPlayer);
 
-        // Eğer asteroid oyuncudan uzaklaşıyor ve minimum mesafeden geçtiyse
         if (dot < -0.5f && minDistance > 1.5f && Time.time - spawnTime > 1f)
         {
             RegisterAvoidance();
@@ -266,24 +274,15 @@ public class Astreoid : MonoBehaviour
     void RegisterAvoidance()
     {
         if (avoidanceRegistered) return;
-
         avoidanceRegistered = true;
-        PlayerPerformanceTracker tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
-        if (tracker != null)
-        {
-            tracker.RegisterAsteroidAvoided();
-        }
-    }
 
-    private System.Collections.IEnumerator TemporarySlowMotion()
-    {
-        Time.timeScale = 0.3f;
-        yield return new WaitForSecondsRealtime(0.15f);
-        Time.timeScale = 1f;
+        var tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
+        if (tracker != null) tracker.RegisterAsteroidAvoided();
     }
 
     private void LateUpdate()
     {
+        if (Camera.main == null) return;
         if (!IsVisibleFrom(Camera.main))
         {
             RecycleOrDestroy();
@@ -292,20 +291,17 @@ public class Astreoid : MonoBehaviour
 
     private bool IsVisibleFrom(Camera camera)
     {
+        var col = GetComponent<Collider>();
+        if (col == null) return true;
         Plane[] planes = GeometryUtility.CalculateFrustumPlanes(camera);
-        return GeometryUtility.TestPlanesAABB(planes, GetComponent<Collider>().bounds);
+        return GeometryUtility.TestPlanesAABB(planes, col.bounds);
     }
 
     private void RecycleOrDestroy()
     {
         if (prefabReference != null && AstreoidPool.Instance != null)
-        {
             AstreoidPool.Instance.Recycle(prefabReference, gameObject);
-        }
         else
-        {
             Destroy(gameObject);
-        }
     }
-
 }
