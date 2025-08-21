@@ -310,6 +310,10 @@ MonoBehaviour:
   scoreSystem: {fileID: 688513535}
   gameOverUI: {fileID: 126514779}
   astreidSpwaner: {fileID: 1393293755}
+  gameOverDelay: 1.2
+  useSlowMoOnCrash: 1
+  slowMoScale: 0.2
+  slowMoDuration: 0.15
 --- !u!1 &36514683
 GameObject:
   m_ObjectHideFlags: 0
@@ -1932,6 +1936,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameOverHandler: {fileID: 18731654}
+  explosionPrefab: {fileID: 8304213614855716382, guid: 91a64ad1763c25547ab23a237367087f, type: 3}
 --- !u!64 &751640269
 MeshCollider:
   m_ObjectHideFlags: 0

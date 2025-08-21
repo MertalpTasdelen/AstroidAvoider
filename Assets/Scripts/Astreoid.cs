@@ -34,6 +34,8 @@ public class Astreoid : MonoBehaviour
     private bool hasPassedPlayer = false;
     private Vector3 initialPlayerPosition;
 
+    [SerializeField] private GameObject explosionPrefab;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -158,6 +160,12 @@ public class Astreoid : MonoBehaviour
             AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
         }
 
+        if (explosionPrefab != null)
+        {
+            Instantiate(explosionPrefab, transform.position, Quaternion.identity);
+        }
+
+        AstreoidPool.Instance?.Recycle(prefabReference, gameObject);
         playerHealth.Crash();
     }
 
