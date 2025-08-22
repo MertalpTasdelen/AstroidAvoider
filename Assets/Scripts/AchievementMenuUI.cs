@@ -179,12 +179,12 @@ public class AchievementMenuUI : MonoBehaviour
             if (string.IsNullOrWhiteSpace(desc))
             {
                 // Description yoksa sade ve anlaşılır bir fallback:
-                desc = $"İlerleme: {friendlyProgress}";
+                desc = $"Ilerleme: {friendlyProgress}";
             }
             else
             {
                 // Varsa, sonuna ilerleme bilgisini ekleyip kullanıcıya netlik verelim.
-                desc = $"{desc}\nİlerleme: {friendlyProgress}";
+                desc = $"{desc}\n\nIlerleme: {friendlyProgress}";
             }
 
             if (descriptionText != null) descriptionText.text = desc;
