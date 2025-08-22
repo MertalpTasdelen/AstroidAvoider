@@ -1,10 +1,52 @@
 fileFormatVersion: 2
-guid: 2e7eb104c418ebf4f95930eaf7be487b
+guid: 12d24583f09455746ae7e2a0f97ae0e6
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 5959591905451038718
-    second: laser-beam_0
+      213: -1075914435163556026
+    second: Interface windows_0
+  - first:
+      213: 6272799835004449078
+    second: Interface windows_1
+  - first:
+      213: 5442010213146667433
+    second: Interface windows_2
+  - first:
+      213: 9078790117441612056
+    second: Interface windows_3
+  - first:
+      213: 9079613762718912693
+    second: Interface windows_4
+  - first:
+      213: -2162925168860653028
+    second: Interface windows_5
+  - first:
+      213: -1680523125302840098
+    second: Interface windows_6
+  - first:
+      213: 389435512943239862
+    second: Interface windows_7
+  - first:
+      213: -7204245417482000545
+    second: Interface windows_8
+  - first:
+      213: -5081789679511295578
+    second: Interface windows_9
+  - first:
+      213: 7851677635517676471
+    second: Interface windows_10
+  - first:
+      213: 4241660325199427701
+    second: Interface windows_11
+  - first:
+      213: -2828940007296014082
+    second: Interface windows_12
+  - first:
+      213: 3427559307316122834
+    second: Interface windows_13
+  - first:
+      213: -7503124653026697962
+    second: Interface windows_14
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,23 +168,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: laser-beam_0
+      name: Interface windows_13
       rect:
         serializedVersion: 2
-        x: 0
-        y: 0
-        width: 791
-        height: 351
+        x: 1340
+        y: 240
+        width: 240
+        height: 225
       alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 20, y: 19, z: 19, w: 19}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: ef7d3b24349b4b250800000000000000
-      internalID: 5959591905451038718
+      spriteID: 2d4592fa703219f20800000000000000
+      internalID: 3427559307316122834
       vertices: []
       indices: 
       edges: []
@@ -151,7 +193,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: cfbc739a97f633044b5f9ca2e971166f
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +203,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      laser-beam_0: 5959591905451038718
+      Interface windows_13: 3427559307316122834
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
