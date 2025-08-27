@@ -1,49 +1,10 @@
 fileFormatVersion: 2
-guid: 763671e169c5d5b45a74b4e8bd8cc490
+guid: eba71f5bdc33d4c41b45d521be8ce617
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -4197023622967946776
-    second: FrameMap_0
-  - first:
-      213: -7644670983201256514
-    second: FrameMap_1
-  - first:
-      213: 7424120768775938192
-    second: FrameMap_2
-  - first:
-      213: -560173891099753290
-    second: FrameMap_3
-  - first:
-      213: -1600339322230750160
-    second: FrameMap_4
-  - first:
-      213: 1663717616174915691
-    second: FrameMap_5
-  - first:
-      213: -8746012688442918989
-    second: FrameMap_6
-  - first:
-      213: 8936236313897758982
-    second: FrameMap_7
-  - first:
-      213: -1546986900907264952
-    second: FrameMap_8
-  - first:
-      213: 5405018342399797936
-    second: FrameMap_9
-  - first:
-      213: -9107297383489246516
-    second: FrameMap_10
-  - first:
-      213: 4854287038331859883
-    second: FrameMap_11
-  - first:
-      213: 1753796473934010370
-    second: FrameMap_12
-  - first:
-      213: -6561269754702965356
-    second: FrameMap_13
+      213: 2329385166170476472
+    second: Scrolling1_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -87,7 +48,7 @@ TextureImporter:
   compressionQuality: 50
   spriteMode: 2
   spriteExtrude: 1
-  spriteMeshType: 0
+  spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
   spritePixelsToUnits: 100
@@ -114,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -165,23 +126,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: FrameMap_9
+      name: Scrolling1_0
       rect:
         serializedVersion: 2
-        x: 1
-        y: 36
-        width: 94
-        height: 88
+        x: 14
+        y: 0
+        width: 18
+        height: 32
       alignment: 0
-      pivot: {x: 0.5, y: 0.5}
-      border: {x: 7, y: 8, z: 7, w: 8}
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0bae53f9b8b720b40800000000000000
-      internalID: 5405018342399797936
+      spriteID: 8bfc7ae8773a35020800000000000000
+      internalID: 2329385166170476472
       vertices: []
       indices: 
       edges: []
@@ -190,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: fa11aee846ba9c84e91ec3e11afe3983
+    spriteID: 
     internalID: 0
     vertices: []
     indices: 
@@ -199,21 +160,7 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable:
-      FrameMap_0: -4197023622967946776
-      FrameMap_1: -7644670983201256514
-      FrameMap_10: -9107297383489246516
-      FrameMap_11: 4854287038331859883
-      FrameMap_12: 1753796473934010370
-      FrameMap_13: -6561269754702965356
-      FrameMap_2: 7424120768775938192
-      FrameMap_3: -560173891099753290
-      FrameMap_4: -1600339322230750160
-      FrameMap_5: 1663717616174915691
-      FrameMap_6: -8746012688442918989
-      FrameMap_7: 8936236313897758982
-      FrameMap_8: -1546986900907264952
-      FrameMap_9: 5405018342399797936
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
