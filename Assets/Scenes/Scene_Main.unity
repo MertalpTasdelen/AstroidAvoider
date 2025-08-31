@@ -602,7 +602,7 @@ MonoBehaviour:
     tileWidth: 40
     tileHeight: 20.5
   player: {fileID: 751640265}
-  difficultyManager: {fileID: 1987583517}
+  difficultyManager: {fileID: 0}
 --- !u!4 &167678690
 Transform:
   m_ObjectHideFlags: 0
@@ -1788,7 +1788,7 @@ Transform:
   m_GameObject: {fileID: 634800268}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2302.4844, y: 1207.6072, z: -2.2307827}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1876,7 +1876,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forceMagnitude: 20
   maxVelocity: 8
-  rotationSpeed: 5
+  rotationSpeed: 6
   playerFlame: {fileID: 36514683}
   joystick: {fileID: 1886186748}
 --- !u!4 &751640266
@@ -2772,7 +2772,7 @@ Transform:
   m_GameObject: {fileID: 1078409065}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 1208.0104, y: 191.50159, z: 7.4182315}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3340,7 +3340,7 @@ MonoBehaviour:
     tileWidth: 40
     tileHeight: 20.5
   player: {fileID: 751640265}
-  difficultyManager: {fileID: 1987583517}
+  difficultyManager: {fileID: 0}
 --- !u!4 &1198410854
 Transform:
   m_ObjectHideFlags: 0
@@ -3481,7 +3481,7 @@ MonoBehaviour:
   - {fileID: 8059833892791638760, guid: d5b02efcf9fb6d14589aa09dc33a5552, type: 3}
   - {fileID: 1603805468513432338, guid: eaa2bc800819c364380ef2c11712fb87, type: 3}
   splitAsteroidPrefab: {fileID: 1040074329139878, guid: fb1db0349223a394e98b65533ebde234, type: 3}
-  secondsBetweenAstreoids: 1.5
+  secondsBetweenAstreoids: 1
   forceRange: {x: 1, y: 6}
 --- !u!4 &1393293756
 Transform:
@@ -3805,6 +3805,58 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!1 &1594852291
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1594852293}
+  - component: {fileID: 1594852292}
+  m_Layer: 0
+  m_Name: DiffucultyManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1594852292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594852291}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f42d9181c03fa448887474fe153dd4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  performanceTracker: {fileID: 1961493712}
+  difficultyText: {fileID: 1148479258}
+  checkInterval: 1
+  shakeDuration: 0.6
+  shakeMagnitude: 0.2
+  screenOverlayImage: {fileID: 0}
+  flashColor: {r: 1, g: 0, b: 0, a: 0.25}
+  flashDuration: 0.3
+--- !u!4 &1594852293
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1594852291}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1600281582
 GameObject:
   m_ObjectHideFlags: 0
@@ -4423,7 +4475,7 @@ MonoBehaviour:
     tileWidth: 40
     tileHeight: 20.5
   player: {fileID: 751640265}
-  difficultyManager: {fileID: 1987583517}
+  difficultyManager: {fileID: 0}
 --- !u!4 &1773127896
 Transform:
   m_ObjectHideFlags: 0
@@ -4874,7 +4926,7 @@ Transform:
   m_GameObject: {fileID: 1903850879}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2315.1318, y: 999.81714, z: 8.41277}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5196,6 +5248,50 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bffac15ab19a54a4dad63ea5b57a6b0b, type: 3}
+--- !u!1 &1961493711
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1961493713}
+  - component: {fileID: 1961493712}
+  m_Layer: 0
+  m_Name: PlayerPerformanceTracker
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1961493712
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961493711}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f17cc6da5cb31948ad0156b2eb10e90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1961493713
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1961493711}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1987583511
 GameObject:
   m_ObjectHideFlags: 0
@@ -5205,11 +5301,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1987583514}
-  - component: {fileID: 1987583516}
-  - component: {fileID: 1987583517}
   - component: {fileID: 1987583518}
   m_Layer: 0
-  m_Name: GameManager
+  m_Name: Ad Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5224,44 +5318,12 @@ Transform:
   m_GameObject: {fileID: 1987583511}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 2.6169066, y: -0.6780707, z: 0.03015173}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1987583516
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1987583511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4f17cc6da5cb31948ad0156b2eb10e90, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1987583517
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1987583511}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f42d9181c03fa448887474fe153dd4f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  performanceTracker: {fileID: 1987583516}
-  difficultyText: {fileID: 1148479258}
-  checkInterval: 5
-  shakeDuration: 0.6
-  shakeMagnitude: 0.2
-  screenOverlayImage: {fileID: 1083577675}
-  flashColor: {r: 1, g: 0, b: 0, a: 0.25}
-  flashDuration: 0.3
 --- !u!114 &1987583518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5388,3 +5450,5 @@ SceneRoots:
   - {fileID: 1903850881}
   - {fileID: 1078409067}
   - {fileID: 634800270}
+  - {fileID: 1961493713}
+  - {fileID: 1594852293}
