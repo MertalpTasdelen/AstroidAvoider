@@ -485,7 +485,21 @@ TextureImporter:
     secondaryTextures: []
     spriteCustomMetadata:
       entries: []
-    nameFileIdTable: {}
+    nameFileIdTable:
+      iphone_logo_1_0: 4696171390031847580
+      iphone_logo_1_1: -4956927652096943500
+      iphone_logo_1_10: 7398630621122879209
+      iphone_logo_1_11: 7328750461225529926
+      iphone_logo_1_12: -9054205371456306461
+      iphone_logo_1_13: 1728421657408930145
+      iphone_logo_1_2: -7379643339198213686
+      iphone_logo_1_3: -8025996363003534134
+      iphone_logo_1_4: 6260204547239613804
+      iphone_logo_1_5: 5365227623303942322
+      iphone_logo_1_6: 6150316262190897863
+      iphone_logo_1_7: 6337225404674747618
+      iphone_logo_1_8: -542533289044094897
+      iphone_logo_1_9: -652528154150953620
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
