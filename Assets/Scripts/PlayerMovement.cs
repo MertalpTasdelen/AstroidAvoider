@@ -56,18 +56,22 @@ public class PlayerMovements : MonoBehaviour
 
     void FixedUpdate()
     {
-        // Joystick yönüne göre doğrudan X ve Y pozisyonunu değiştir
+        // Joystick yönüne göre geminin hızını doğrudan ayarla (kaymayı engelle)
         if (inputIntensity > 0.01f)
         {
-            // Joystick yönüne göre kuvvet uygula (X ve Y düzleminde)
-            rb.AddForce(lastKnownDirection * forceMagnitude * inputIntensity, ForceMode.Force);
-            
+            Vector3 desiredVelocity = lastKnownDirection * (maxVelocity * inputIntensity);
+            rb.linearVelocity = desiredVelocity;
+            rb.angularVelocity = Vector3.zero;
+
             // Debug: Joystick yönü ve gemi rotasyonu
             Debug.Log($"Joystick Yönü: {lastKnownDirection} | Gemi Rotation: {transform.eulerAngles} | Gemi Forward: {transform.forward}");
         }
-
-        // Hızın maksimumu aşmasını engelle
-        rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxVelocity);
+        else
+        {
+            // Giriş yoksa hızını yumuşakça azalt
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, 10f * Time.fixedDeltaTime);
+            rb.angularVelocity = Vector3.zero;
+        }
     }
 
     public Vector3 GetCurrentMovementDirection()
