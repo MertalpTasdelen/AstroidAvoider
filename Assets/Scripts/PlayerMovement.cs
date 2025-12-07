@@ -56,13 +56,17 @@ public class PlayerMovements : MonoBehaviour
 
     void FixedUpdate()
     {
+        // Joystick yönüne göre doğrudan X ve Y pozisyonunu değiştir
         if (inputIntensity > 0.01f)
         {
-            // Joystick aktifken kuvvet uygula
+            // Joystick yönüne göre kuvvet uygula (X ve Y düzleminde)
             rb.AddForce(lastKnownDirection * forceMagnitude * inputIntensity, ForceMode.Force);
+            
+            // Debug: Joystick yönü ve gemi rotasyonu
+            Debug.Log($"Joystick Yönü: {lastKnownDirection} | Gemi Rotation: {transform.eulerAngles} | Gemi Forward: {transform.forward}");
         }
 
-        // Hızı maksimumla sınırlamaya devam
+        // Hızın maksimumu aşmasını engelle
         rb.linearVelocity = Vector3.ClampMagnitude(rb.linearVelocity, maxVelocity);
     }
 
@@ -119,27 +123,28 @@ public class PlayerMovements : MonoBehaviour
 
     private void RotatePlayerFace()
     {
-        if (rb.linearVelocity.magnitude < 0.1f) { return; }
+        // Joystick girişi varsa geminin X rotasyonunu (bakış yönü) değiştir
+        if (inputIntensity < 0.01f) return;
 
-        // 3D model X=-90'da yerleşmiş, hareket yönüne bakması için Y ekseni etrafında döndür
-        Vector3 direction = rb.linearVelocity.normalized;
-        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg - 90f;
+        // Joystick yönüne göre X rotasyonunu hesapla (forward ile joystick'i hizalamak için y'i tersle)
+        float angle = -Mathf.Atan2(lastKnownDirection.y, lastKnownDirection.x) * Mathf.Rad2Deg;
         
-        // X=-90 sabit, Y ekseni hareket yönüne göre dönecek, Z=0
-        Quaternion targetRotation = Quaternion.Euler(-90f, angle, 0f);
-
-        transform.rotation = Quaternion.Lerp(
-            transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        // Y=90° sabit, Z=-90° sabit, X açısı joystick yönüne göre değişir (bakış yönü)
+        Quaternion targetRotation = Quaternion.Euler(angle, 90f, -90f);
+        
+        // Rotasyonu anında değiştir
+        transform.rotation = targetRotation;
     }
 
     private void OnCollisionEnter(Collision c)
     {
         if (c.collider.CompareTag("Asteroid"))
         {
+            // Asteroide çarptığında angular velocity'yi sıfırla
             rb.angularVelocity = Vector3.zero;
-            // X=-90 sabit, Y'yi koru, Z=0
+            // Y=90°, Z=-90° kalırken X'i koru
             var e = transform.eulerAngles;
-            transform.rotation = Quaternion.Euler(-90, e.y, 0);
+            transform.rotation = Quaternion.Euler(e.x, 90f, -90f);
         }
     }
 
