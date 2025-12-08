@@ -11,10 +11,13 @@ public class DifficultyManager : MonoBehaviour
     [SerializeField] private PlayerPerformanceTracker performanceTracker;
     [SerializeField] private TMP_Text difficultyText;
     public float checkInterval = 1f;
+    [SerializeField] private float stageIntervalSeconds = 60f;
 
     private float timeSinceLastCheck = 0f;
     private int difficultyLevel = 1;
-    private int lastStageShown = 1;
+    private bool isStageTransitionRunning = false;
+    private float stageTimer = 0f;
+    private int currentStage = 1;
 
     [Header("Camera Shake Settings")]
     public float shakeDuration = 0.6f;
@@ -40,42 +43,70 @@ public class DifficultyManager : MonoBehaviour
 
     void Update()
     {
-        timeSinceLastCheck += Time.deltaTime;
+        timeSinceLastCheck += Time.unscaledDeltaTime;
 
         if (timeSinceLastCheck >= checkInterval)
         {
             AdjustDifficulty();
             timeSinceLastCheck = 0f;
         }
+
+        TickStageTimer();
     }
 
     private void AdjustDifficulty()
     {
-        //Bonus aktifse hiç güncelleme yapma
-        if (BonusStageManager.Instance != null && BonusStageManager.Instance.IsBonusActive())
-            return;
-
         // Score'a dayalı difficulty hesaplama - her 100 puan için 1 seviye artış
         float currentScore = ScoreSystem.Instance != null ? ScoreSystem.Instance.GetScore() : 0f;
         int newLevel = Mathf.Clamp(1 + Mathf.FloorToInt(currentScore / 100f), 1, 10);
-        int newStage = Mathf.FloorToInt((float)newLevel / 3f) + 1;
         
-        if (newStage > lastStageShown)
-        {
-            lastStageShown = newStage;
-            StageTransitionManager.Instance?.PlayStageTransition(
-                newStage - 1,
-                () =>
-                {
-                    difficultyLevel = newLevel;
-                    ApplyDifficultyFeedback();
-                });
-        }
-        else if (newLevel > difficultyLevel)
+        if (newLevel > difficultyLevel)
         {
             difficultyLevel = newLevel;
             ApplyDifficultyFeedback();
         }
+    }
+
+    private void TickStageTimer()
+    {
+        if (isStageTransitionRunning)
+            return;
+
+        bool bonusActive = BonusStageManager.Instance != null && BonusStageManager.Instance.IsBonusActive();
+        if (bonusActive)
+            return;
+
+        stageTimer += Time.unscaledDeltaTime;
+
+        if (stageTimer >= stageIntervalSeconds)
+        {
+            TriggerStageTransition();
+        }
+    }
+
+    private void TriggerStageTransition()
+    {
+        if (StageTransitionManager.Instance == null)
+        {
+            stageTimer = 0f;
+            currentStage++;
+            return;
+        }
+
+        isStageTransitionRunning = true;
+        float overflow = stageTimer - stageIntervalSeconds;
+        stageTimer = Mathf.Max(0f, overflow); // taşıyan süreyi koru
+        int completedStage = currentStage;
+
+        StageTransitionManager.Instance.PlayStageTransition(
+            completedStage,
+            () =>
+            {
+                currentStage++;
+                stageTimer = 0f;
+                isStageTransitionRunning = false;
+                timeSinceLastCheck = 0f;
+            });
     }
 
     public void ForceCheck()
@@ -141,7 +172,9 @@ public class DifficultyManager : MonoBehaviour
         difficultyLevel = 1;
         timeSinceLastCheck = 0f;
         performanceTracker?.ResetPerformance();
-        lastStageShown = 1;
+        isStageTransitionRunning = false;
+        stageTimer = 0f;
+        currentStage = 1;
 
 
         Debug.Log($"[STAGE] After: {difficultyLevel}");

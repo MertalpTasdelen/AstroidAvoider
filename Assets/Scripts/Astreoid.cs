@@ -83,11 +83,23 @@ public class Astreoid : MonoBehaviour
             return;
         }
 
-        if (useZigZag)
+        if (useZigZag && rb != null)
         {
-            float wave = Mathf.Sin((Time.time - spawnTime) * zigzagFrequency) * zigzagMagnitude;
-            Vector3 perp = Vector3.Cross(direction, Vector3.forward);
-            transform.position += perp * wave * Time.deltaTime;
+            // sinüs tabanlı yan salınımı daha yumuşak uygulayalım
+            float wave = Mathf.Sin((Time.time - spawnTime) * zigzagFrequency);
+            float baseSpeed = rb.linearVelocity.magnitude;
+
+            // ana yönü güncel tut ve dik yönü hesapla
+            direction = rb.linearVelocity.sqrMagnitude > 0.0001f ? rb.linearVelocity.normalized : direction;
+            Vector3 perp = Vector3.Cross(direction, Vector3.forward).normalized;
+
+            float lateralAmplitude = zigzagMagnitude * baseSpeed * 0.35f; // 0.35 çarpanı salınımı sakinleştirir
+            Vector3 lateralVelocity = perp * (wave * lateralAmplitude);
+            Vector3 forwardVelocity = direction * baseSpeed;
+            Vector3 targetVelocity = forwardVelocity + lateralVelocity;
+
+            // kademeli geçiş ile titreşimi azalt
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, targetVelocity, zigzagFrequency * 0.5f * Time.deltaTime);
         }
 
         CheckNearMiss();

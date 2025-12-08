@@ -63,13 +63,8 @@ public class StageTransitionManager : MonoBehaviour
         if (bonusStageManager != null)
         {
             bonusStageManager.StartBonusStage();
-            // Instead of blindly polling the BonusStageManager's IsBonusActive
-            // property, wait for a fixed duration of 15 seconds in real time.
-            // This guarantees that every bonus stage lasts exactly 15 seconds
-            // regardless of internal state changes. After the wait, explicitly
-            // terminate the bonus stage if it is still active to ensure lasers
-            // are disabled and normal gameplay resumes.
-            yield return new WaitForSecondsRealtime(15f);
+            float bonusDuration = bonusStageManager.GetBonusStageDuration();
+            yield return new WaitForSecondsRealtime(bonusDuration);
             if (bonusStageManager.IsBonusActive())
             {
                 bonusStageManager.EndBonusStage();

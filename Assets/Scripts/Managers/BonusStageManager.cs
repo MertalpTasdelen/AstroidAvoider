@@ -43,9 +43,6 @@ public class BonusStageManager : MonoBehaviour
         isBonusActive = true;
         remainingTime = bonusStageDuration;
 
-        if (DifficultyManager.Instance != null)
-            DifficultyManager.Instance.enabled = false;
-
         if (playerLaser == null)
             playerLaser = FindFirstObjectByType<LaserShooter>();
 
@@ -59,9 +56,6 @@ public class BonusStageManager : MonoBehaviour
         isBonusStageActive = false;
         isBonusActive = false;
 
-        if (DifficultyManager.Instance != null)
-            DifficultyManager.Instance.enabled = true;
-
         if (playerLaser == null)
             playerLaser = FindFirstObjectByType<LaserShooter>();
 
@@ -71,5 +65,10 @@ public class BonusStageManager : MonoBehaviour
     public bool IsBonusActive()
     {
         return isBonusActive;
+    }
+
+    public float GetBonusStageDuration()
+    {
+        return bonusStageDuration;
     }
 }
