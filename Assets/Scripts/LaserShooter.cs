@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class LaserShooter : MonoBehaviour
 {
-    [Header("Lazer Ayarları")]
+    [Header("Laser Settings")]
     [SerializeField] private GameObject laserPrefab;
     [SerializeField] private float fireRate = 0.3f;
     [SerializeField] private float laserSpeed = 10f;

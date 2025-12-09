@@ -1,22 +1,32 @@
 using UnityEngine;
 
 [RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(AudioSource))]
 public class DestroyAfterAnimation : MonoBehaviour
 {
     private Animator animator;
-    private bool hasPlayed = false;
+    private AudioSource audioSource;
+    private bool hasTriggeredDestroy = false;
 
     void Awake()
     {
         animator = GetComponent<Animator>();
+        audioSource = GetComponent<AudioSource>();
     }
 
     void Update()
     {
-        if (!hasPlayed && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
+        // animasyon tamamlandığında bir kez çalıştır
+        if (!hasTriggeredDestroy && animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1f)
         {
-            hasPlayed = true;
-            Destroy(gameObject);
+            hasTriggeredDestroy = true;
+            // ses kaynağı varsa ses süresi kadar gecikmeli yok et
+            float delay = 0f;
+            if (audioSource != null && audioSource.clip != null)
+            {
+                delay = audioSource.clip.length - audioSource.time;
+            }
+            Destroy(gameObject, Mathf.Max(0f, delay));
         }
     }
 }

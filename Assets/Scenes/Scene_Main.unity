@@ -3882,6 +3882,7 @@ MonoBehaviour:
   performanceTracker: {fileID: 1961493712}
   difficultyText: {fileID: 1148479258}
   checkInterval: 1
+  stageIntervalSeconds: 60
   shakeDuration: 0.6
   shakeMagnitude: 0.2
   screenOverlayImage: {fileID: 0}
