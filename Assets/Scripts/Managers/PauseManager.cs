@@ -14,6 +14,10 @@ public class PauseManager : MonoBehaviour
     [SerializeField] private Sprite pauseSprite;
     [SerializeField] private Sprite playSprite;
 
+    [Header("Audio (optional)")]
+    [Tooltip("Only these music sources will be paused/unpaused when the game is paused.")]
+    [SerializeField] private AudioSource[] musicSources;
+
     private bool isPaused = false;
 
     private void Awake()
@@ -37,6 +41,8 @@ public class PauseManager : MonoBehaviour
         {
             pausePanel.SetActive(false);
         }
+
+        TryAutoAssignMusicSources();
 
         // Pause butonuna listener ekle
         if (pauseButton != null)
@@ -64,6 +70,8 @@ public class PauseManager : MonoBehaviour
     {
         isPaused = true;
         Time.timeScale = 0f; // Oyunu durdur
+
+        PauseMusic();
         
         if (pausePanel != null)
         {
@@ -80,6 +88,8 @@ public class PauseManager : MonoBehaviour
     {
         isPaused = false;
         Time.timeScale = 1f; // Oyunu devam ettir
+
+        ResumeMusic();
         
         if (pausePanel != null)
         {
@@ -112,9 +122,76 @@ public class PauseManager : MonoBehaviour
         return isPaused;
     }
 
+    private void TryAutoAssignMusicSources()
+    {
+        if (musicSources != null && musicSources.Length > 0)
+        {
+            return;
+        }
+
+        // Best-effort: if scene has a dedicated music player, hook it automatically.
+        var gameMusic = FindFirstObjectByType<GameMusicPlayer>();
+        if (gameMusic != null)
+        {
+            var src = gameMusic.GetComponent<AudioSource>();
+            if (src != null)
+            {
+                musicSources = new[] { src };
+                return;
+            }
+        }
+
+        var menuMusic = FindFirstObjectByType<MenuMusicPlayer>();
+        if (menuMusic != null)
+        {
+            var src = menuMusic.GetComponent<AudioSource>();
+            if (src != null)
+            {
+                musicSources = new[] { src };
+            }
+        }
+    }
+
+    private void PauseMusic()
+    {
+        if (musicSources == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < musicSources.Length; i++)
+        {
+            var src = musicSources[i];
+            if (src != null && src.isPlaying)
+            {
+                src.Pause();
+            }
+        }
+    }
+
+    private void ResumeMusic()
+    {
+        if (musicSources == null)
+        {
+            return;
+        }
+
+        for (int i = 0; i < musicSources.Length; i++)
+        {
+            var src = musicSources[i];
+            if (src != null)
+            {
+                src.UnPause();
+            }
+        }
+    }
+
     private void OnDestroy()
     {
         // Oyun kapanırken time scale'i sıfırla
         Time.timeScale = 1f;
+
+        // In case destroyed while paused.
+        ResumeMusic();
     }
 }
