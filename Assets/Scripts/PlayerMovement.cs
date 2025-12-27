@@ -7,7 +7,11 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float maxVelocity;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private GameObject playerFlame;
-    [SerializeField] private DynamicJoystick joystick;
+    [SerializeField] private FloatingJoystick joystick;
+
+    [Header("Screen Wrap")]
+    [Tooltip("How far past the edge (in viewport units) the ship must go before wrapping.")]
+    [SerializeField, Range(0f, 0.25f)] private float screenWrapPaddingViewport = 0.02f;
 
 
     private Rigidbody rb;
@@ -100,28 +104,50 @@ public class PlayerMovements : MonoBehaviour
 
     private void KeepPlayerOnScreen()
     {
-        Vector3 newPosition = transform.position;
+        if (mainCamera == null)
+        {
+            mainCamera = Camera.main;
+            if (mainCamera == null)
+            {
+                return;
+            }
+        }
 
         Vector3 viewportPosition = mainCamera.WorldToViewportPoint(transform.position);
+        float pad = screenWrapPaddingViewport;
 
-        if (viewportPosition.x > 1)
+        bool wrapped = false;
+
+        if (viewportPosition.x > 1f + pad)
         {
-            newPosition.x = -newPosition.x + 0.1f;
+            viewportPosition.x = -pad;
+            wrapped = true;
         }
-        if (viewportPosition.x < 0)
+        else if (viewportPosition.x < -pad)
         {
-            newPosition.x = -newPosition.x - 0.1f;
-        }
-        if (viewportPosition.y > 1)
-        {
-            newPosition.y = -newPosition.y + 0.1f;
-        }
-        if (viewportPosition.y < 0)
-        {
-            newPosition.y = -newPosition.y - 0.1f;
+            viewportPosition.x = 1f + pad;
+            wrapped = true;
         }
 
-        transform.position = newPosition;
+        if (viewportPosition.y > 1f + pad)
+        {
+            viewportPosition.y = -pad;
+            wrapped = true;
+        }
+        else if (viewportPosition.y < -pad)
+        {
+            viewportPosition.y = 1f + pad;
+            wrapped = true;
+        }
+
+        if (!wrapped)
+        {
+            return;
+        }
+
+        Vector3 wrappedWorld = mainCamera.ViewportToWorldPoint(viewportPosition);
+        wrappedWorld.z = 0f;
+        transform.position = wrappedWorld;
 
     }
 

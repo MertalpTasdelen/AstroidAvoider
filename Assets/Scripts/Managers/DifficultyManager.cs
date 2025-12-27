@@ -122,7 +122,7 @@ public class DifficultyManager : MonoBehaviour
         StartCoroutine(FlashScreen());
 
         if (difficultyText != null)
-            difficultyText.text = $"Difficulty: {difficultyLevel}";
+            difficultyText.text = $"Dalga: {difficultyLevel}";
 
         if (difficultyLevel >= 5)
             AchievementApiClient.Instance?.SubmitProgress("difficulty_5", 1);
@@ -175,6 +175,9 @@ public class DifficultyManager : MonoBehaviour
         isStageTransitionRunning = false;
         stageTimer = 0f;
         currentStage = 1;
+
+        if (difficultyText != null)
+            difficultyText.text = $"Dalga: {difficultyLevel}";
 
 
         Debug.Log($"[STAGE] After: {difficultyLevel}");
