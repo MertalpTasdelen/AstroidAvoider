@@ -53,7 +53,6 @@ public class PlayerMovements : MonoBehaviour
         rb.linearDamping = isJoystickActive ? 0f : 0.05f;
 
         ProcessInput();
-        KeepPlayerOnScreen();
         RotatePlayerFace();
     }
 
@@ -77,6 +76,9 @@ public class PlayerMovements : MonoBehaviour
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, 10f * Time.fixedDeltaTime);
             rb.angularVelocity = Vector3.zero;
         }
+
+        // Wrap'i physics adımında uygula (Update + transform.position ile çakışmasın)
+        KeepPlayerOnScreen();
     }
 
     public Vector3 GetCurrentMovementDirection()
@@ -106,50 +108,72 @@ public class PlayerMovements : MonoBehaviour
     private void KeepPlayerOnScreen()
     {
         if (mainCamera == null)
-        {
             mainCamera = Camera.main;
-            if (mainCamera == null)
-            {
-                return;
-            }
-        }
+        if (mainCamera == null)
+            return;
 
-        Vector3 viewportPosition = mainCamera.WorldToViewportPoint(transform.position);
-        float pad = screenWrapPaddingViewport;
+        // Bu wrap, Orthographic kamera + z=0 gameplay düzlemi için tasarlandı.
+        // (Senin durumun: kamera Orthographic ve oyun alanı tam ekran sınırı.)
+        if (!mainCamera.orthographic)
+            return;
+
+        float halfH = mainCamera.orthographicSize;
+        float halfW = halfH * mainCamera.aspect;
+
+        Vector3 camPos = mainCamera.transform.position;
+        float left = camPos.x - halfW;
+        float right = camPos.x + halfW;
+        float bottom = camPos.y - halfH;
+        float top = camPos.y + halfH;
+
+        // Viewport padding'i world-unit'e çevir
+        float padV = Mathf.Max(0f, screenWrapPaddingViewport);
+        float padX = (right - left) * padV;
+        float padY = (top - bottom) * padV;
+
+        float minX = left - padX;
+        float maxX = right + padX;
+        float minY = bottom - padY;
+        float maxY = top + padY;
+
+        float spanX = (right - left) + 2f * padX;
+        float spanY = (top - bottom) + 2f * padY;
+
+        Vector3 pos = rb != null ? rb.position : transform.position;
+        pos.z = 0f;
 
         bool wrapped = false;
 
-        if (viewportPosition.x > 1f + pad)
+        // Toroidal (mod) wrap: taşma miktarını korur → aynı doğrultu bozulmaz.
+        while (pos.x > maxX)
         {
-            viewportPosition.x = -pad;
+            pos.x -= spanX;
             wrapped = true;
         }
-        else if (viewportPosition.x < -pad)
+        while (pos.x < minX)
         {
-            viewportPosition.x = 1f + pad;
+            pos.x += spanX;
             wrapped = true;
         }
 
-        if (viewportPosition.y > 1f + pad)
+        while (pos.y > maxY)
         {
-            viewportPosition.y = -pad;
+            pos.y -= spanY;
             wrapped = true;
         }
-        else if (viewportPosition.y < -pad)
+        while (pos.y < minY)
         {
-            viewportPosition.y = 1f + pad;
+            pos.y += spanY;
             wrapped = true;
         }
 
         if (!wrapped)
-        {
             return;
-        }
 
-        Vector3 wrappedWorld = mainCamera.ViewportToWorldPoint(viewportPosition);
-        wrappedWorld.z = 0f;
-        transform.position = wrappedWorld;
-
+        if (rb != null)
+            rb.position = pos;
+        else
+            transform.position = pos;
     }
 
     private void RotatePlayerFace()
