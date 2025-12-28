@@ -7,6 +7,7 @@ public class PlayerMovements : MonoBehaviour
     [SerializeField] private float maxVelocity;
     [SerializeField] private float rotationSpeed;
     [SerializeField] private GameObject playerFlame;
+    
     [SerializeField] private FloatingJoystick joystick;
 
     [Header("Screen Wrap")]
