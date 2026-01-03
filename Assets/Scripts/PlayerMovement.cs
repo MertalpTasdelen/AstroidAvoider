@@ -43,7 +43,9 @@ public class PlayerMovements : MonoBehaviour
     {
         float horizontal = joystick.Horizontal;
         float vertical = joystick.Vertical;
-        Vector2 joystickVector = new Vector2(horizontal, vertical);
+
+        float sensitivity = GameSettings.GetSensitivity();
+        Vector2 joystickVector = new Vector2(horizontal, vertical) * sensitivity;
         inputIntensity = Mathf.Clamp01(joystickVector.magnitude);
 
         bool isJoystickActive = inputIntensity > 0.01f;
@@ -63,7 +65,15 @@ public class PlayerMovements : MonoBehaviour
         // Joystick yönüne göre geminin hızını doğrudan ayarla (kaymayı engelle)
         if (inputIntensity > 0.01f)
         {
-            Vector3 desiredVelocity = lastKnownDirection * (maxVelocity * inputIntensity);
+            float sensitivity = GameSettings.GetSensitivity();
+            float baseSpeed = forceMagnitude > 0.0001f ? forceMagnitude : maxVelocity;
+            float cappedSpeed = maxVelocity > 0.0001f ? maxVelocity : baseSpeed;
+
+            float desiredSpeed = baseSpeed * sensitivity * inputIntensity;
+            float maxAllowedSpeed = cappedSpeed * sensitivity * inputIntensity;
+            float finalSpeed = Mathf.Min(desiredSpeed, maxAllowedSpeed);
+
+            Vector3 desiredVelocity = lastKnownDirection * finalSpeed;
             rb.linearVelocity = desiredVelocity;
             rb.angularVelocity = Vector3.zero;
 
@@ -90,12 +100,13 @@ public class PlayerMovements : MonoBehaviour
         float horizontal = joystick.Horizontal;
         float vertical = joystick.Vertical;
 
-        Vector2 joystickVector = new Vector2(horizontal, vertical);
+        float sensitivity = GameSettings.GetSensitivity();
+        Vector2 joystickVector = new Vector2(horizontal, vertical) * sensitivity;
         inputIntensity = Mathf.Clamp01(joystickVector.magnitude);
 
         if (inputIntensity > 0.01f)
         {
-            movementDirection = new Vector3(horizontal, vertical, 0f).normalized;
+            movementDirection = new Vector3(joystickVector.x, joystickVector.y, 0f).normalized;
             lastKnownDirection = movementDirection;
         }
         else

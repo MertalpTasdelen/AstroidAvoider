@@ -35,6 +35,8 @@ public class NearMissFeedbackSystem : MonoBehaviour
         PlaySoundEffect();
         cameraShake?.Shake(0.1f, 0.05f);
 
+        HapticsManager.Vibrate();
+
         AchievementApiClient.Instance?.SubmitProgress("near_miss_3", 1);
         AchievementApiClient.Instance?.SubmitProgress("near_miss_10", 1);
     }

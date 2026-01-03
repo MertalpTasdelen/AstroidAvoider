@@ -32,6 +32,8 @@ public class GameOverHandler : MonoBehaviour
         // Spawner ve skor sayacı durdurulsun (UI daha sonra açılacak)
         if (astreidSpwaner != null) astreidSpwaner.enabled = false;
 
+        HapticsManager.Vibrate();
+
         var scoreRef = scoreSystem != null ? scoreSystem : ScoreSystem.Instance;
         if (scoreRef != null) scoreRef.PauseScore();
 

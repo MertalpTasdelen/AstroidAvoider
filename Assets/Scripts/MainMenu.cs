@@ -5,6 +5,7 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] private AchievementMenuUI achievementsUI;
     [SerializeField] private GlobalScoreboardMenuUI globalScoreboardUI;
+    [SerializeField] private SettingsMenuUI settingsMenuUI;
 
 
     public void ShowMainMenu()
@@ -25,12 +26,24 @@ public class MainMenu : MonoBehaviour
     {
         TryAutoAssignAchievementUI();
         TryAutoAssignLeaderboardUI();
+        TryAutoAssignSettingsUI();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         TryAutoAssignAchievementUI();
         TryAutoAssignLeaderboardUI();
+        TryAutoAssignSettingsUI();
+    }
+
+    public void OpenSettings()
+    {
+        if (settingsMenuUI == null || settingsMenuUI.Equals(null))
+        {
+            TryAutoAssignSettingsUI();
+        }
+
+        settingsMenuUI?.TogglePanel();
     }
 
     public void OpenGlobalLeaderboard()
@@ -76,6 +89,22 @@ public class MainMenu : MonoBehaviour
             else
             {
                 Debug.LogError("[MainMenu] GlobalScoreboardMenuUI not found in scene!");
+            }
+        }
+    }
+
+    private void TryAutoAssignSettingsUI()
+    {
+        if (settingsMenuUI == null || settingsMenuUI.Equals(null))
+        {
+            settingsMenuUI = FindFirstObjectByType<SettingsMenuUI>();
+            if (settingsMenuUI != null)
+            {
+                Debug.Log("[MainMenu] Auto-assigned SettingsMenuUI");
+            }
+            else
+            {
+                Debug.LogWarning("[MainMenu] SettingsMenuUI not found in scene.");
             }
         }
     }
