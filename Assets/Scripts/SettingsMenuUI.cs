@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 public class SettingsMenuUI : MonoBehaviour
 {
@@ -18,6 +19,9 @@ public class SettingsMenuUI : MonoBehaviour
     [SerializeField] private SettingsApplier settingsApplier;
 
     private bool isBinding;
+
+    public bool IsOpen => panelRoot != null && panelRoot.activeSelf;
+    public event Action<bool> VisibilityChanged;
 
     private void Awake()
     {
@@ -45,6 +49,8 @@ public class SettingsMenuUI : MonoBehaviour
             panelRoot.SetActive(true);
         }
 
+        VisibilityChanged?.Invoke(true);
+
         RefreshUIFromSettings();
     }
 
@@ -54,6 +60,8 @@ public class SettingsMenuUI : MonoBehaviour
         {
             panelRoot.SetActive(false);
         }
+
+        VisibilityChanged?.Invoke(false);
     }
 
     public void TogglePanel()
@@ -65,6 +73,8 @@ public class SettingsMenuUI : MonoBehaviour
 
         bool next = !panelRoot.activeSelf;
         panelRoot.SetActive(next);
+
+        VisibilityChanged?.Invoke(next);
 
         if (next)
         {

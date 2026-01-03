@@ -7,6 +7,10 @@ public class MainMenu : MonoBehaviour
     [SerializeField] private GlobalScoreboardMenuUI globalScoreboardUI;
     [SerializeField] private SettingsMenuUI settingsMenuUI;
 
+    [Header("UI Root")]
+    [Tooltip("If set, this object will be hidden when Settings is open. If empty, will try to find a child named 'Canvas'.")]
+    [SerializeField] private GameObject mainMenuCanvasRoot;
+
 
     public void ShowMainMenu()
     {
@@ -27,6 +31,9 @@ public class MainMenu : MonoBehaviour
         TryAutoAssignAchievementUI();
         TryAutoAssignLeaderboardUI();
         TryAutoAssignSettingsUI();
+
+        TryAutoAssignMainMenuCanvasRoot();
+        HookSettingsVisibility();
     }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -34,6 +41,9 @@ public class MainMenu : MonoBehaviour
         TryAutoAssignAchievementUI();
         TryAutoAssignLeaderboardUI();
         TryAutoAssignSettingsUI();
+
+        TryAutoAssignMainMenuCanvasRoot();
+        HookSettingsVisibility();
     }
 
     public void OpenSettings()
@@ -44,6 +54,33 @@ public class MainMenu : MonoBehaviour
         }
 
         settingsMenuUI?.TogglePanel();
+    }
+
+    private void HookSettingsVisibility()
+    {
+        if (settingsMenuUI == null || settingsMenuUI.Equals(null))
+        {
+            return;
+        }
+
+        settingsMenuUI.VisibilityChanged -= OnSettingsVisibilityChanged;
+        settingsMenuUI.VisibilityChanged += OnSettingsVisibilityChanged;
+
+        // Ensure correct state on load.
+        OnSettingsVisibilityChanged(settingsMenuUI.IsOpen);
+    }
+
+    private void OnSettingsVisibilityChanged(bool isSettingsOpen)
+    {
+        if (mainMenuCanvasRoot == null)
+        {
+            TryAutoAssignMainMenuCanvasRoot();
+        }
+
+        if (mainMenuCanvasRoot != null)
+        {
+            mainMenuCanvasRoot.SetActive(!isSettingsOpen);
+        }
     }
 
     public void OpenGlobalLeaderboard()
@@ -106,6 +143,25 @@ public class MainMenu : MonoBehaviour
             {
                 Debug.LogWarning("[MainMenu] SettingsMenuUI not found in scene.");
             }
+        }
+    }
+
+    private void TryAutoAssignMainMenuCanvasRoot()
+    {
+        if (mainMenuCanvasRoot != null)
+        {
+            return;
+        }
+
+        Transform canvas = transform.Find("Canvas");
+        if (canvas != null)
+        {
+            mainMenuCanvasRoot = canvas.gameObject;
+        }
+        else
+        {
+            // Fallback: hide the whole menu object if no Canvas child exists.
+            mainMenuCanvasRoot = gameObject;
         }
     }
 
