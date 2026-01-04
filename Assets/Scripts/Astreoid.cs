@@ -17,6 +17,8 @@ public class Astreoid : MonoBehaviour
     private Vector3 direction;
     private float spawnTime;
 
+    private float targetSpeed;
+
     public bool canSplit = true;
     public float splitDelay = 2f;
     public GameObject splitAsteroidPrefab;
@@ -54,11 +56,16 @@ public class Astreoid : MonoBehaviour
     {
         spawnTime = Time.time;
 
+        // ZigZag behavior has been removed (was not fun / too random).
+        useZigZag = false;
+
         if (rb != null)
         {
             direction = rb.linearVelocity.sqrMagnitude > 0.0001f
                 ? rb.linearVelocity.normalized
                 : transform.right; // emniyet
+
+            targetSpeed = rb.linearVelocity.magnitude;
         }
 
         player = GameObject.FindWithTag("Player")?.transform;
@@ -66,10 +73,23 @@ public class Astreoid : MonoBehaviour
         if (player != null)
             initialPlayerPosition = player.position;
 
-        if (useHoming && player != null)
+        // Homing: fire-and-forget. Only aim once, at spawn time, to the player's current position.
+        if (useHoming)
         {
-            Vector3 directionToPlayer = (player.position - transform.position).normalized;
-            rb.linearVelocity = directionToPlayer * homingSpeed;
+            if (player == null)
+                player = GameObject.FindWithTag("Player")?.transform;
+
+            if (rb != null && player != null)
+            {
+                Vector3 toPlayer = (player.position - transform.position);
+                toPlayer.z = 0f;
+                if (toPlayer.sqrMagnitude > 0.0001f)
+                {
+                    direction = toPlayer.normalized;
+                    targetSpeed = homingSpeed > 0.01f ? homingSpeed : Mathf.Max(0.1f, targetSpeed);
+                    rb.linearVelocity = direction * targetSpeed;
+                }
+            }
         }
     }
 
@@ -83,27 +103,23 @@ public class Astreoid : MonoBehaviour
             return;
         }
 
-        if (useZigZag && rb != null)
+        if (rb != null)
         {
-            // sinüs tabanlı yan salınımı daha yumuşak uygulayalım
-            float wave = Mathf.Sin((Time.time - spawnTime) * zigzagFrequency);
-            float baseSpeed = rb.linearVelocity.magnitude;
-
-            // ana yönü güncel tut ve dik yönü hesapla
-            direction = rb.linearVelocity.sqrMagnitude > 0.0001f ? rb.linearVelocity.normalized : direction;
-            Vector3 perp = Vector3.Cross(direction, Vector3.forward).normalized;
-
-            float lateralAmplitude = zigzagMagnitude * baseSpeed * 0.35f; // 0.35 çarpanı salınımı sakinleştirir
-            Vector3 lateralVelocity = perp * (wave * lateralAmplitude);
-            Vector3 forwardVelocity = direction * baseSpeed;
-            Vector3 targetVelocity = forwardVelocity + lateralVelocity;
-
-            // kademeli geçiş ile titreşimi azalt
-            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, targetVelocity, zigzagFrequency * 0.5f * Time.deltaTime);
+            UpdateMovement();
         }
 
         CheckNearMiss();
         CheckAsteroidAvoidance();
+    }
+
+    private void UpdateMovement()
+    {
+        // Keep an updated baseline speed.
+        float currentSpeed = rb.linearVelocity.magnitude;
+        if (currentSpeed > 0.01f)
+            targetSpeed = currentSpeed;
+
+        // ZigZag removed.
     }
 
     // --- OYUNCU ÇARPIŞMASINI HEM TRIGGER HEM COLLISION'DA YAKALA ---
@@ -259,6 +275,9 @@ public class Astreoid : MonoBehaviour
                 nearMissTriggered = true;
                 ScoreSystem.Instance?.AddAvoidBonus(10);
                 NearMissFeedbackSystem.Instance?.TriggerNearMissFeedback();
+
+                var tracker = Object.FindFirstObjectByType<PlayerPerformanceTracker>();
+                if (tracker != null) tracker.RegisterNearMiss();
             }
 
             inNearZone = false;

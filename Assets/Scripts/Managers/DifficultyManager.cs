@@ -58,12 +58,42 @@ public class DifficultyManager : MonoBehaviour
     {
         // Score'a dayalı difficulty hesaplama - her 100 puan için 1 seviye artış
         float currentScore = ScoreSystem.Instance != null ? ScoreSystem.Instance.GetScore() : 0f;
-        int newLevel = Mathf.Clamp(1 + Mathf.FloorToInt(currentScore / 100f), 1, 10);
-        
-        if (newLevel > difficultyLevel)
+        int baseLevel = Mathf.Clamp(1 + Mathf.FloorToInt(currentScore / 100f), 1, 10);
+
+        int performanceDelta = 0;
+        if (performanceTracker != null)
         {
-            difficultyLevel = newLevel;
+            // Reward sustained "hitless" play.
+            performanceDelta += Mathf.Clamp(Mathf.FloorToInt(performanceTracker.secondsSinceLastHit / 20f), 0, 2);
+
+            // Reward near-miss skill (recent).
+            performanceDelta += Mathf.Clamp(Mathf.FloorToInt(performanceTracker.nearMissHeat * 0.5f), 0, 2);
+
+            // Penalize recent hits.
+            performanceDelta -= Mathf.Clamp(Mathf.CeilToInt(performanceTracker.hitHeat * 0.75f), 0, 2);
+        }
+
+        int desiredLevel = Mathf.Clamp(baseLevel + performanceDelta, 1, 10);
+
+        if (desiredLevel > difficultyLevel)
+        {
+            difficultyLevel = desiredLevel;
             ApplyDifficultyFeedback();
+            return;
+        }
+
+        // Allow gentle downshift if player is struggling (prevents "stuck" high difficulty).
+        if (desiredLevel < difficultyLevel)
+        {
+            bool recentlyHit = performanceTracker != null && performanceTracker.hitHeat >= 1f;
+            if (recentlyHit)
+            {
+                difficultyLevel = Mathf.Max(desiredLevel, difficultyLevel - 1);
+                AstreoidSpawner.Instance?.SetDifficultyLevel(difficultyLevel);
+
+                if (difficultyText != null)
+                    difficultyText.text = $"Dalga: {difficultyLevel}";
+            }
         }
     }
 
