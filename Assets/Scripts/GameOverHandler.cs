@@ -52,7 +52,7 @@ public class GameOverHandler : MonoBehaviour
         int finalScore = scoreRef != null ? Mathf.FloorToInt(scoreRef.GetScore()) : 0;
         int highScore  = scoreRef != null ? scoreRef.GetHighScore()               : 0;
 
-        gameOverText.text = $"Game Over\nScore: {finalScore}\nHigh Score: {highScore}";
+        gameOverText.text = $"Seans Tamamlandi\nSkor: {finalScore}\nYuksek Skor: {highScore}";
 
         string playerName = PlayerPrefs.GetString("PlayerName", "Player");
         if (LeaderboardApiClient.Instance != null && scoreRef != null)
