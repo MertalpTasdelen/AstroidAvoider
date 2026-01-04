@@ -151,6 +151,9 @@ public class DifficultyManager : MonoBehaviour
         StartCoroutine(SinusoidalShake());
         StartCoroutine(FlashScreen());
 
+        // Subtle haptic when the wave/difficulty increases.
+        HapticsManager.VibratePulses(1);
+
         if (difficultyText != null)
             difficultyText.text = $"Dalga: {difficultyLevel}";
 

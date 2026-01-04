@@ -52,7 +52,8 @@ public class StageTransitionManager : MonoBehaviour
             yield return new WaitForSecondsRealtime(0.5f);
         }
 
-        // Show bonus stage intro
+        // Bonus stage intro + subtle haptic (double pulse)
+        HapticsManager.VibratePulses(2, 0.12f);
         yield return StartCoroutine(BonusTransitionRoutine(null));
 
         // Resume normal timescale during the bonus stage
@@ -74,7 +75,8 @@ public class StageTransitionManager : MonoBehaviour
         // Slow down time for the next stage intro
         Time.timeScale = 0.3f;
 
-        // Show the incoming stage message
+        // Incoming stage message + subtle haptic (single pulse)
+        HapticsManager.VibratePulses(1);
         yield return StartCoroutine(ShowText($"STAGE {stage + 1} INCOMING!", stageIncomingClip));
 
         // Restore normal timescale and notify completion
